@@ -1,0 +1,14 @@
+{
+  "name": "parplusplus",
+  "version": "1.0.0",
+  "description": "PaprPlusPlus is a new programming language done with antlr4 and js",
+  "main": "ParPlusPlusLexer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patricio Saldivar & Adrian Hinojosa",
+  "license": "ISC",
+  "dependencies": {
+    "antlr4": "^4.8.0"
+  }
+}
