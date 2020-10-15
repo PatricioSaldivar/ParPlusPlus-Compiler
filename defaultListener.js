@@ -1,5 +1,5 @@
 
-const {ParPlusPlusListener} = require('./antlr4AutoGen/ParPlusPlusListener');
+const {ParPlusPlusListener} = require('./ParPlusPlusListener');
 
 class DefaultListener extends ParPlusPlusListener {
     // Override any method needed.

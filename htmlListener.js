@@ -1,7 +1,7 @@
-const antlr4 = require('antlr4');
-const ParPlusPlusLexer = require('./antlr4AutoGen/ParPlusPlusLexer');
-const ParPlusPlusParser = require('./antlr4AutoGen/ParPlusPlusParser');
-var ParPlusPlusListener = require('./antlr4AutoGen/ParPlusPlusListener').ParPlusPlusListener;
+const antlr4 = require('antlr4/index');
+const ParPlusPlusLexer = require('./ParPlusPlusLexer');
+const ParPlusPlusParser = require('./ParPlusPlusParser');
+var ParPlusPlusListener = require('./ParPlusPlusListener').ParPlusPlusListener;
 
 htmlListener = function(res) {
     this.Res = res;    

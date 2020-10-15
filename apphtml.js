@@ -2,12 +2,12 @@
 
 // https://tomassetti.me/antlr-mega-tutorial/#htmlchatlistener.js
 const http = require('http');
-const antlr4 = require('antlr4');
-const ParPlusPlusLexer = require('./antlr4AutoGen/ParPlusPlusLexer');
-const ParPlusPlusParser = require('./antlr4AutoGen/ParPlusPlusParser');
+const antlr4 = require('antlr4/index');
+const ParPlusPlusLexer = require('./ParPlusPlusLexer');
+const ParPlusPlusParser = require('./ParPlusPlusParser');
 const HtmlParPlusPlusListener = require('./htmlListener').htmlListener;
 
-const ParPlusPlusListener = require('./antlr4AutoGen/ParPlusPlusListener');
+const ParPlusPlusListener = require('./ParPlusPlusListener');
 // Usar llaves porque se usa exports y no module.exports
 const DefaultListener = require('./defaultListener');
 
