@@ -35,13 +35,14 @@ int module fact(int j)
 }
 
 void module inicia(int y)
-  var int x;
+  var int j;
 {
   x = 0;
   while (x < 11) do {
     arreglo[x] = y * x;
     x = x + 1;
   }
+  
 }
 
 main() {

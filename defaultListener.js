@@ -1,10 +1,20 @@
 const {ParPlusPlusListener} = require('./antlr4AutoGen/ParPlusPlusListener');
+const virtualMemoryHandler = require('./virtualMemoryHandler');
+const objects = require('./objects');
+const { memoryCtr } = require('./virtualMemoryHandler');
+
+// Use virtual memory in order to process the quadruples.
+
 
 let functionTable = new Map();
+
+// The vars table saves the ID and the type.
 functionTable.set("Global", {
     type: "void",
     vars: new Map(),
 });
+
+
 let currentFunction = "Global";
 let currentType = "";
 
@@ -24,6 +34,7 @@ class DefaultListener extends ParPlusPlusListener {
         });
         // Set current function to self so the variables cold be declare inside it.
         currentFunction = ctx.ID().getText();
+        memoryCtr.deleteLocalMemory;
     }
 
     // Enter variable creation block
@@ -39,23 +50,37 @@ class DefaultListener extends ParPlusPlusListener {
             console.log(`ERROR, ID ${ctx.ID().getText()} already exists`);
             return;            
         }
+        // Check any variable direction overflow in the memory
+        let newDir = memoryCtr.setDirection(currentType, currentFunction);
+        if (newDir === -1)
+        {
+            console.log('ERROR, Variable declaration overflow');
+        }
 
-        //Single variable
-        if(ctx.varDimensionsInit != undefined){
-            functionTable.get(currentFunction).vars.set(ctx.ID().getText(), {
-                type: currentType,
-                value: undefined,
-            } );
+        // Single Variable
+        else if (ctx.varDimensionsInit != undefined)
+        {
+            // FLAG
+            functionTable.get(currentFunction).vars.set(ctx.ID().getText(), 
+                {
+                    type: currentType,
+                    dir: newDir,
+                }
+            );
         }
         // List or Matrix variable
-        else{
+        else {
             functionTable.get(currentFunction).vars.set(ctx.ID().getText(), {
                 type: currentType,
-                value: undefined,
-                // dimensions: un objeto dimensiones para saber si es matriz o arreglo y sus tamanos 
+                dir: newDir,
             } );
         }
     }
+
+
+    // ========= Creacion de cuadroplus ====================
+
+
 }
 
 

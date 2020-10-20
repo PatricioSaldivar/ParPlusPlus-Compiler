@@ -1,4 +1,4 @@
-// Generated from c:\Users\pato5\Desktop\ScriptTest\ParPlusPlus.g4 by ANTLR 4.8
+// Generated from /Users/User/Documents/ITC/Semestre7/Compis/Proy-Final/ParPlusPlus-Compiler/ParPlusPlus.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
