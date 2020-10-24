@@ -1,4 +1,4 @@
-// Generated from .\ParPlusPlus.g4 by ANTLR 4.8
+// Generated from ParPlusPlus.g4 by ANTLR 4.8
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -260,6 +260,87 @@ ParPlusPlusListener.prototype.enterExpresion = function(ctx) {
 
 // Exit a parse tree produced by ParPlusPlusParser#expresion.
 ParPlusPlusListener.prototype.exitExpresion = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#lessThanOrEqualExp.
+ParPlusPlusListener.prototype.enterLessThanOrEqualExp = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#lessThanOrEqualExp.
+ParPlusPlusListener.prototype.exitLessThanOrEqualExp = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#greaterThanOrEqualExp.
+ParPlusPlusListener.prototype.enterGreaterThanOrEqualExp = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#greaterThanOrEqualExp.
+ParPlusPlusListener.prototype.exitGreaterThanOrEqualExp = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#equalsExp.
+ParPlusPlusListener.prototype.enterEqualsExp = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#equalsExp.
+ParPlusPlusListener.prototype.exitEqualsExp = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#differentExp.
+ParPlusPlusListener.prototype.enterDifferentExp = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#differentExp.
+ParPlusPlusListener.prototype.exitDifferentExp = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#andExp.
+ParPlusPlusListener.prototype.enterAndExp = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#andExp.
+ParPlusPlusListener.prototype.exitAndExp = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#orExp.
+ParPlusPlusListener.prototype.enterOrExp = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#orExp.
+ParPlusPlusListener.prototype.exitOrExp = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#lessThan.
+ParPlusPlusListener.prototype.enterLessThan = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#lessThan.
+ParPlusPlusListener.prototype.exitLessThan = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#greaterThan.
+ParPlusPlusListener.prototype.enterGreaterThan = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#greaterThan.
+ParPlusPlusListener.prototype.exitGreaterThan = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#notExp.
+ParPlusPlusListener.prototype.enterNotExp = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#notExp.
+ParPlusPlusListener.prototype.exitNotExp = function(ctx) {
 };
 
 

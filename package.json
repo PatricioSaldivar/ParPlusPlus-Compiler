@@ -5,10 +5,12 @@
   "main": "ParPlusPlusLexer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+    
   },
   "author": "Patricio Saldivar & Adrian Hinojosa",
   "license": "ISC",
   "dependencies": {
-    "antlr4": "^4.8.0"
+    "antlr4": "^4.8.0",
+    "stackjs": "^1.0.0"
   }
 }

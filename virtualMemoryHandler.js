@@ -8,7 +8,17 @@ const localIntStartDir = 3000;
 const localFloatStartDir = 4000;
 const localCharStartDir = 5000;
 
+
+// Temporal Memory. (no separar por tipos)
+const temporalMemory = 7000;
+
+// Constant Memory. (no separar por tipos)
+const constMemory = 9000;
+
+
+
 const endMemory = 6000;
+
 
 // Initialize the global virtual memory. Separate by data types.
 memoryCtr.iGlobalIntCount = globalIntStartDir;      
@@ -19,6 +29,19 @@ memoryCtr.iGlobalCharCount = globalCharStartDir;
 memoryCtr.iLocalIntCount = localIntStartDir;      
 memoryCtr.iLocalFloatCount = localFloatStartDir;    
 memoryCtr.iLocalCharCount = localCharStartDir;
+
+// Create temproal memory
+memoryCtr.iTemporalCount = temporalMemory;
+
+// Create constant memory
+memoryCtr.iConstantCount = constMemory;
+
+
+// Faltan metodos de push y pop
+
+// t1 t2 t3 t4
+// + 2 3 T1
+// + 1 T1 T2
 
 // Reset the Local Memory.
 memoryCtr.deleteLocalMemory = function() {
@@ -179,6 +202,5 @@ memoryCtr.setDirection = function(type, currentScope){
 
 
 module.exports = {
-    Quadruple: Quadruple,
     memoryCtr: memoryCtr
 };
