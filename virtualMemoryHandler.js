@@ -178,7 +178,6 @@ memoryCtr.getType = function(dir){
 }
 
 
-
 // CHAR memory handler
 memoryCtr.addConstantMemorySlot = function() {
     this.iConstantCount += 1;
