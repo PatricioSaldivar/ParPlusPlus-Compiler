@@ -345,6 +345,7 @@ class DefaultListener extends ParPlusPlusListener {
     exitSemicolon(ctx) {
         // Todo: EMPTY THE TEMPORAL MEMORY
         // restart the initial count.
+        memoryCtr.restartTemporalMemorySlot();
 
         while(quadruplerHandler.PilaO.size() > 0)
         {

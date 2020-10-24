@@ -191,6 +191,14 @@ memoryCtr.addTemporalMemorySlot = function(i) {
     console.log("---------------------------");
 }
 
+memoryCtr.restartTemporalMemorySlot = function(i) {
+    iTemporalMemoryList = [];
+    for (var i = memoryCtr.temporalMemoryStartDir; i <= memoryCtr.temporalMemoryEndDir ; i++) {
+        iTemporalMemoryList.push(i);
+        // console.log("Memory restarted");
+    }
+}
+
 // Regresar un número en nuestro rango de la temp memory.
 memoryCtr.getTemporalMemorySlot = function() {
     // Quitar primer elemento de la lista de temporales
