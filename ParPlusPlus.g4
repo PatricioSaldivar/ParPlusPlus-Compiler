@@ -148,16 +148,32 @@ notExp
 : NOT exp;
 
 exp // A exp
-: exp PLUS termino
-| exp MINUS termino
+: exp plus termino
+| exp minus termino
 | termino
 ;
 
+plus
+: PLUS;
+
+minus
+: MINUS;
+
 termino // A term
-: termino MULT factor
-| termino DIV factor
-| termino MOD factor
+: termino mult factor
+| termino div factor
+| termino mod factor
 | factor;
+
+mult
+: MULT;
+
+div
+: DIV;
+
+mod
+: MOD;
+
 
 factor // A factor
 : funcCall

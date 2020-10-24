@@ -353,12 +353,57 @@ ParPlusPlusListener.prototype.exitExp = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParPlusPlusParser#plus.
+ParPlusPlusListener.prototype.enterPlus = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#plus.
+ParPlusPlusListener.prototype.exitPlus = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#minus.
+ParPlusPlusListener.prototype.enterMinus = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#minus.
+ParPlusPlusListener.prototype.exitMinus = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParPlusPlusParser#termino.
 ParPlusPlusListener.prototype.enterTermino = function(ctx) {
 };
 
 // Exit a parse tree produced by ParPlusPlusParser#termino.
 ParPlusPlusListener.prototype.exitTermino = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#mult.
+ParPlusPlusListener.prototype.enterMult = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#mult.
+ParPlusPlusListener.prototype.exitMult = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#div.
+ParPlusPlusListener.prototype.enterDiv = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#div.
+ParPlusPlusListener.prototype.exitDiv = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#mod.
+ParPlusPlusListener.prototype.enterMod = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#mod.
+ParPlusPlusListener.prototype.exitMod = function(ctx) {
 };
 
 

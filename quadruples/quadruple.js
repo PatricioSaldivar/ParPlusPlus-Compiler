@@ -14,3 +14,4 @@ class Quadruple {
         this.bGoTo = bGoTo;
     }
 }
+module.exports = Quadruple;

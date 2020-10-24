@@ -3,13 +3,14 @@ const virtualMemoryHandler = require('./virtualMemoryHandler');
 const { memoryCtr } = require('./virtualMemoryHandler');
 const Quadruple = require('./quadruples/quadruple');
 const quadruplerHandler = require('./quadruples/quadrupleHandler');
-const semanticCube = require('./semantics/semanticCube')
+const semanticCube = require('./semantics/semanticCube');
+const { push } = require('./semantics/semanticCube');
 
 // Use virtual memory in order to process the quadruples.
 
 
 let functionTable = new Map();
-
+let dirTemporal = 8000;
 // The vars table saves the ID and the type.
 functionTable.set("Global", {
     type: "void",
@@ -33,6 +34,9 @@ class DefaultListener extends ParPlusPlusListener {
     enterProgram(ctx) {
         console.log('children CTX');
         // console.log(ctx);
+    }
+    exitProgram(ctx){
+        console.log(quadruplerHandler.listQuadruples);
     }
 
     // Function block
@@ -99,76 +103,130 @@ class DefaultListener extends ParPlusPlusListener {
 
 
     // ========= Creacion de cuadroplus ====================
-    enterExp(ctx){
-        console.log("ENTER EXP");
-        if(ctx.PLUS())
-        {
-            console.log(ctx.exp().getText() + "+" + ctx.termino().getText());
-            // exp + termino
-        
-        }
-        else if(ctx.MINUS())
-        {
-            console.log(ctx.exp().getText() + "-" + ctx.termino().getText());
-            // exp - termino
-        }
-        else
-        {
-            // termino
+    exitExp(ctx){
+        if(!quadruplerHandler.POper.isEmpty()){
+            if(quadruplerHandler.POper.peek() === "+" || quadruplerHandler.POper.peek() === "-"){
+                let operator = quadruplerHandler.POper.peek();
+                quadruplerHandler.POper.pop();
+                let right_operand = quadruplerHandler.PilaO.peek();
+                let right_type = quadruplerHandler.PTypes.peek();
+                quadruplerHandler.PilaO.pop();
+                quadruplerHandler.PTypes.pop();
+                let left_operand = quadruplerHandler.PilaO.peek();
+                let left_type = quadruplerHandler.PTypes.peek();
+                
+                // To Do.
+                // Semantic cube TODO
+                let result_Type = "INT"
+                
+                if(result_Type === "ERROR"){
+                    console.log("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
+                }
+                else
+                {
+                    // Result is equal to a tempral 
+                    let result = dirTemporal;
+                    dirTemporal = dirTemporal+ 1;
+                
+
+                    let quad = new Quadruple(operator,left_operand,right_operand,result,0);
+                    quadruplerHandler.listQuadruples.push(quad);
+                    quadruplerHandler.PilaO.push(result);
+
+                    /*
+                    ****************************************************************************************
+                    ****************************************************************************************
+                    ****************************************************************************************
+                    If left operand or right operand are temporals, that memory should be free
+
+                    let tempMemoryStart;
+                    let tempMemoryEnd;
+                    
+                    if(left_operand >= tempMemoryStart && left_operand <= tempMemoryEnd){
+                        //Free left_operand memory
+                    }
+                    if(right_operand >= tempMemoryStart && right_operand <= tempMemoryEnd){
+                        //Free right_operand memory
+                    }
+                    ****************************************************************************************
+                    ****************************************************************************************
+                    ****************************************************************************************
+                    */
+                }
+            }
         }
     }
 
-
+    exitPlus(ctx){
+        quadruplerHandler.POper.push("+");
+    }
+    exitMinus(ctx){
+        quadruplerHandler.POper.push("-");
+    }
  
     exitTermino(ctx){
-        if(quadruplerHandler.POper.peek() === "*" || quadruplerHandler.POper.peek() === "/"){
-            let operator = quadruplerHandler.POper.peek();
-            quadruplerHandler.POper.pop();
-            let right_operand = quadruplerHandler.PilaO.peek();
-            let right_type = quadruplerHandler.PTypes.peek();
-            quadruplerHandler.PilaO.pop();
-            quadruplerHandler.PTypes.pop();
-            let left_operand = quadruplerHandler.PilaO.peek();
-            let left_type = quadruplerHandler.PTypes.peek();
-            
-            // To Do.
-            let result_Type = semanticCube(left_type, right_type, operator);
-            
-            if(result_Type === "ERROR"){
-                console.log("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
-            }
-            else
-            {
+        if(!quadruplerHandler.POper.isEmpty()){
+            if(quadruplerHandler.POper.peek() === "*" || quadruplerHandler.POper.peek() === "/"){
+                let operator = quadruplerHandler.POper.peek();
+                quadruplerHandler.POper.pop();
+                let right_operand = quadruplerHandler.PilaO.peek();
+                let right_type = quadruplerHandler.PTypes.peek();
+                quadruplerHandler.PilaO.pop();
+                quadruplerHandler.PTypes.pop();
+                let left_operand = quadruplerHandler.PilaO.peek();
+                let left_type = quadruplerHandler.PTypes.peek();
                 
-                let result = dirTemporal;
-                dirTemproral++;
-                // operator, iDirOne, iDirTwo, iDirThree, bGoTo
-                let quad = new Quadruple(operator, );
-                // result <-  AVAIL.next()    // 
-                 
-                // Concepto de AVAIL:
-                /*
-                    1 + 2 + 3 + 4
-                    + 1 2 t1
-                    + t1 3 t2
-                    + t2 4 t3
-                */
+                // To Do.
+                //TODO Semantic cube
+                let result_Type = "INT"
+                
+                if(result_Type === "ERROR"){
+                    console.log("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
+                }
+                else
+                {
+                    // Result is equal to a tempral 
+                    let result = dirTemporal;
+                    dirTemporal = dirTemporal+ 1;
+                
+
+                    let quad = new Quadruple.Quadruple(operator,left_operand,right_operand,result,0);
+                    quadruplerHandler.listQuadruples.push(quad);
+                    quadruplerHandler.PilaO.push(result);
+
+                    /*
+                    ****************************************************************************************
+                    ****************************************************************************************
+                    ****************************************************************************************
+                    If left operand or right operand are temporals, that memory should be free
+
+                    let tempMemoryStart;
+                    let tempMemoryEnd;
+                    
+                    if(left_operand >= tempMemoryStart && left_operand <= tempMemoryEnd){
+                        //Free left_operand memory
+                    }
+                    if(right_operand >= tempMemoryStart && right_operand <= tempMemoryEnd){
+                        //Free right_operand memory
+                    }
+                    ****************************************************************************************
+                    ****************************************************************************************
+                    ****************************************************************************************
+                    */
+                }
+            
             }
         }
-        
-            
-        if(ctx.MULT())
-        {
-           
-        
-        }
-        else if(ctx.DIV())
-        {
-            // termino / factor
+    }
 
-        }else if(ctx.MOD()){
-            // termino % factor
-        }
+    exitMod(ctx){
+        quadruplerHandler.POper.push("%");
+    }
+    exitMult(ctx){
+        quadruplerHandler.POper.push("*");
+    }
+    exitDiv(ctx){
+        quadruplerHandler.POper.push("/");
     }
 
     enterFactor(ctx){
