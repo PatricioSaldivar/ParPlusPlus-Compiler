@@ -128,6 +128,15 @@ ParPlusPlusListener.prototype.exitStatue = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParPlusPlusParser#semicolon.
+ParPlusPlusListener.prototype.enterSemicolon = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#semicolon.
+ParPlusPlusListener.prototype.exitSemicolon = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParPlusPlusParser#varDimensions.
 ParPlusPlusListener.prototype.enterVarDimensions = function(ctx) {
 };

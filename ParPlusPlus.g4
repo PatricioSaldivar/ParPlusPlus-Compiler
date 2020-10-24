@@ -50,15 +50,18 @@ statues // Define 0 or more statues
 | ;
 
 statue // Define a statue
-: asignation SEMICOLON
-| funcCall SEMICOLON
-| returnFunc SEMICOLON
-| read SEMICOLON
-| write SEMICOLON
+: asignation semicolon
+| funcCall semicolon
+| returnFunc semicolon
+| read semicolon
+| write semicolon
 | decision
 | whileloop
 | forloop
-| expresion SEMICOLON;
+| expresion semicolon;
+
+semicolon
+: SEMICOLON;
 
 varDimensions // Get acces to a dimension of a variable
 : LB expresion RB

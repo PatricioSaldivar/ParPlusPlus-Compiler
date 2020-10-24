@@ -8,16 +8,24 @@ const localIntStartDir = 3000;
 const localFloatStartDir = 4000;
 const localCharStartDir = 5000;
 
+const endMemory = 6000;
 
 // Temporal Memory. (no separar por tipos)
-const temporalMemory = 7000;
+const temporalMemoryStartDir = 7000;
 
 // Constant Memory. (no separar por tipos)
-const constMemory = 9000;
+const constMemoryStartDir = 9000;
+
+// Initialize start and end of temporal space
+memoryCtr.temporalMemoryStartDir = temporalMemoryStartDir;
+memoryCtr.temporalMemoryEndDir = constMemoryStartDir-1;
 
 
-
-const endMemory = 6000;
+//Initialize TemporalMemoty
+let iTemporalMemoryList = [];
+for (var i = memoryCtr.temporalMemoryStartDir; i <= memoryCtr.temporalMemoryEndDir ; i++) {
+    iTemporalMemoryList.push(i);
+}
 
 
 // Initialize the global virtual memory. Separate by data types.
@@ -30,11 +38,8 @@ memoryCtr.iLocalIntCount = localIntStartDir;
 memoryCtr.iLocalFloatCount = localFloatStartDir;    
 memoryCtr.iLocalCharCount = localCharStartDir;
 
-// Create temproal memory
-memoryCtr.iTemporalCount = temporalMemory;
-
 // Create constant memory
-memoryCtr.iConstantCount = constMemory;
+memoryCtr.iConstantCount = constMemoryStartDir;
 
 
 // Faltan metodos de push y pop
@@ -115,56 +120,14 @@ memoryCtr.addLocalCharMemorySlot = function() {
     }    
 }
 
+
+
 // =============== END Handler ===========================
 
 // =============== Assign Handler ===========================
-
-memoryCtr.setMemoryDirection = function(type, currentF) {
-    let iDir = -1;
-    switch (type)
-    {
-        case 'int' : {
-            if (currentFunction == "Global") {
-                iDir = memoryCtr.iGlobalIntCount;
-                memoryCtr.addGlobalIntMemorySlot();
-                return iDir;
-            }
-            else {
-                iDir = memoryCtr.iLocalIntCount;
-                memoryCtr.addLocalCharMemorySlot();
-                return iDir;
-            }
-        }
-        case 'float' : {
-            if (currentFunction == "Global") {
-                iDir = memoryCtr.iGlobalFloatCount;
-                memoryCtr.addGlobalFloatMemorySlot();
-                return iDir;
-            } 
-            else {
-                iDir = memoryCtr.iLocalFloatCount;
-                memoryCtr.addLocalFloatMemorySlot();
-                return iDir;
-            }
-        }
-        case 'char' : {
-            if (currentFunction == "Global") {
-                iDir = memoryCtr.iGlobalCharCount;
-                memoryCtr.addGlobalCharMemorySlot();
-                return iDir;
-            }
-            else {
-                iDir = memoryCtr.addLocalCharMemorySlot;
-                memoryCtr.addLocalCharMemorySlot();
-                return iDir;
-            }
-        }
-    }
-}
-
 memoryCtr.setDirection = function(type, currentScope){
     let dir = -1;
-    if(type === "int"){
+    if(type === "INT"){
         if(currentScope === "Global"){
             dir = memoryCtr.iGlobalIntCount;
             memoryCtr.addGlobalIntMemorySlot();
@@ -174,7 +137,7 @@ memoryCtr.setDirection = function(type, currentScope){
             memoryCtr.addLocalIntMemorySlot();
             return dir;
         }
-    }else if(type === "char"){
+    }else if(type === "CHAR"){
         if(currentScope === "Global"){
             dir = memoryCtr.iGlobalCharCount;
             memoryCtr.addGlobalCharMemorySlot();
@@ -184,7 +147,6 @@ memoryCtr.setDirection = function(type, currentScope){
             memoryCtr.addLocalCharMemorySlot();
             return dir;
         }
-
     }else{
         if(currentScope === "Global"){
             dir = memoryCtr.iGlobalFloatCount;
@@ -195,10 +157,53 @@ memoryCtr.setDirection = function(type, currentScope){
             memoryCtr.addLocalFloatMemorySlot();
             return dir;
         }
-
     }
 }
 
+
+memoryCtr.getType = function(dir){
+    if(dir >= globalIntStartDir && dir < globalFloatStartDir){
+        return "INT";
+    }else if(dir >= globalFloatStartDir && dir < globalCharStartDir){
+        return "FLOAT"
+    }else if(dir >= globalCharStartDir && dir < localIntStartDir){
+        return "CHAR"
+    }else if(dir >= localIntStartDir && dir < localFloatStartDir){
+        return "INT";
+    }else if(dir >= localFloatStartDir && dir < localCharStartDir){
+        return "FLOAT";
+    }else if(dir >= localCharStartDir && dir < endMemory){
+        return "CHAR";
+    }
+}
+
+
+
+// CHAR memory handler
+memoryCtr.addConstantMemorySlot = function() {
+    this.iConstantCount += 1;
+}
+
+memoryCtr.addTemporalMemorySlot = function(i) {
+    iTemporalMemoryList.push(i);
+    console.log("---------------------------");
+    console.log("Space: " + i + "free");
+    console.log("---------------------------");
+}
+
+// Regresar un número en nuestro rango de la temp memory.
+memoryCtr.getTemporalMemorySlot = function() {
+    // Quitar primer elemento de la lista de temporales
+    if(iTemporalMemoryList.length < 1){
+        return -1;
+    }
+    let i = iTemporalMemoryList[0];
+    // Delete first element.
+    iTemporalMemoryList.splice(0, 1);
+
+    // console.log(iTemporalMemoryList);
+    return i;
+}
 
 
 module.exports = {
