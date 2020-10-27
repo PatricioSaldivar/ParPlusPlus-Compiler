@@ -183,7 +183,7 @@ memoryCtr.addConstantMemorySlot = function() {
     this.iConstantCount += 1;
 }
 
-memoryCtr.addTemporalMemorySlot = function(i) {
+memoryCtr.freeTemporalMemorySlot = function(i) {
     iTemporalMemoryList.push(i);
     console.log("---------------------------");
     console.log("Space: " + i + "free");

@@ -24,14 +24,6 @@ let constantTable = new Map();
 let currentFunction = "Global";
 let currentType = "";
 
-// Declare Stacks to develop quadruples
-
-
-
-
-
-
-
 class DefaultListener extends ParPlusPlusListener {
     
     enterProgram(ctx) {
@@ -104,51 +96,7 @@ class DefaultListener extends ParPlusPlusListener {
     exitExp(ctx){
         if(!quadruplerHandler.POper.isEmpty()){
             if(quadruplerHandler.POper.peek() === "+" || quadruplerHandler.POper.peek() === "-"){
-                let operator = quadruplerHandler.POper.peek();
-                quadruplerHandler.POper.pop();
-                let right_operand = quadruplerHandler.PilaO.peek();
-                let right_type = quadruplerHandler.PTypes.peek();
-                quadruplerHandler.PilaO.pop();
-                quadruplerHandler.PTypes.pop();
-                let left_operand = quadruplerHandler.PilaO.peek();
-                let left_type = quadruplerHandler.PTypes.peek();
-                quadruplerHandler.PilaO.pop();
-                quadruplerHandler.PTypes.pop();
-                // console.log('debugging');
-                // console.log(left_operand);
-                // console.log('pila Oper');
-                // console.log(quadruplerHandler.PilaO);
-
-                // To Do.
-                let result_type = semanticCubeHandler.getType(operator, left_type, right_type);
-                
-                if(result_type === "ERROR"){
-                    console.log("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
-                }
-                else
-                {
-                    // Result is equal to a tempral 
-                    let result = memoryCtr.getTemporalMemorySlot();
-                
-
-                    let quad = new Quadruple(operator,left_operand,right_operand,result,0);
-                    quadruplerHandler.listQuadruples.push(quad);
-                    quadruplerHandler.PilaO.push(result);
-                    quadruplerHandler.PTypes.push(result_type);
-
-                  
-                    //If left operand or right operand are temporals, that memory should be free
-                                        
-                    if(left_operand >= memoryCtr.temporalMemoryStartDir && left_operand <= memoryCtr.temporalMemoryEndDir){
-                        //Free left_operand memory
-                        memoryCtr.addTemporalMemorySlot(left_operand);
-                    }
-
-                    if(right_operand >= memoryCtr.temporalMemoryStartDir && right_operand <= memoryCtr.temporalMemoryEndDir){
-                        //Free left_operand memory
-                        memoryCtr.addTemporalMemorySlot(right_operand);
-                    }
-                }
+                this.makeQuadruple();
             }
         }
     }
@@ -163,47 +111,7 @@ class DefaultListener extends ParPlusPlusListener {
     exitTermino(ctx){
         if(!quadruplerHandler.POper.isEmpty()){
             if(quadruplerHandler.POper.peek() === "*" || quadruplerHandler.POper.peek() === "/"){
-                let operator = quadruplerHandler.POper.peek();
-                quadruplerHandler.POper.pop();
-                let right_operand = quadruplerHandler.PilaO.peek();
-                let right_type = quadruplerHandler.PTypes.peek();
-                quadruplerHandler.PilaO.pop();
-                quadruplerHandler.PTypes.pop();
-                let left_operand = quadruplerHandler.PilaO.peek();
-                let left_type = quadruplerHandler.PTypes.peek();
-                quadruplerHandler.PilaO.pop();
-                quadruplerHandler.PTypes.pop();
-                
-                // To Do.
-                let result_type = semanticCubeHandler.getType(operator, left_type, right_type);
-                
-                if(result_type === "ERROR"){
-                    console.log("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
-                }
-                else
-                {
-                    // Result is equal to a tempral 
-                    let result = memoryCtr.getTemporalMemorySlot();
-                
-                    let quad = new Quadruple.Quadruple(operator,left_operand,right_operand,result,0);
-                    quadruplerHandler.listQuadruples.push(quad);
-                    quadruplerHandler.PilaO.push(result);
-                    quadruplerHandler.PTypes.push(result_type);
-
-                    //If left operand or right operand are temporals, that memory should be free
-                                        
-                    if(left_operand >= memoryCtr.temporalMemoryStartDir && left_operand <= memoryCtr.temporalMemoryEndDir){
-                        //Free left_operand memory
-                        memoryCtr.addTemporalMemorySlot(left_operand);
-                    }
-
-                    if(right_operand >= memoryCtr.temporalMemoryStartDir && right_operand <= memoryCtr.temporalMemoryEndDir){
-                        //Free left_operand memory
-                        memoryCtr.addTemporalMemorySlot(right_operand);
-                    }
-                    
-                }
-            
+            this.makeQuadruple();
             }
         }
     }
@@ -252,64 +160,51 @@ class DefaultListener extends ParPlusPlusListener {
     enterCte(ctx){
         if(ctx.INT())
         {
-            
             quadruplerHandler.PTypes.push('INT');
-           
             // Ver si ya existe
-            if(constantTable.get(ctx.INT().getText())){
-                quadruplerHandler.PilaO.push(constantTable.get(ctx.INT().getText()));
-            }
-            // si no existe lo agrega
-            else
-            {    
+            if(!constantTable.has(ctx.INT().getText())){
+                 // si no existe lo agrega
                 constantTable.set(ctx.INT().getText(), memoryCtr.iConstantCount);
                 memoryCtr.addConstantMemorySlot();
-                quadruplerHandler.PilaO.push(constantTable.get(ctx.INT().getText()));
             }
+            quadruplerHandler.PilaO.push(constantTable.get(ctx.INT().getText()));
         }
         else if(ctx.FLOAT())
         {
             quadruplerHandler.PTypes.push('FLOAT');
-            if(constantTable.get(ctx.FLOAT().getText())){
-                quadruplerHandler.PilaO.push(constantTable.get(ctx.FLOAT().getText()));
-            }
-            // si no existe lo agrega
-            else
-            {    
+            // Verifica si la constante existe en la tabla
+            if(!constantTable.has(ctx.FLOAT().getText())){
+                // si no existe lo agrega
                 constantTable.set(ctx.FLOAT().getText(), memoryCtr.iConstantCount);
                 memoryCtr.addConstantMemorySlot();
-                quadruplerHandler.PilaO.push(constantTable.get(ctx.FLOAT().getText()));
             }
+            quadruplerHandler.PilaO.push(constantTable.get(ctx.FLOAT().getText()));
+            
         }
         else if(ctx.CHAR())
         {
             quadruplerHandler.PTypes.push('CHAR');
-            // quadruplerHandler.PilaO.push(ctx.CHAR().getText());
+            // Verifica si la constante existe en la tabla
             if (constantTable.get(ctx.CHAR().getText())){
-                quadruplerHandler.PilaO.push(constantTable.get(ctx.CHAR().getText()));
-            }
-            // si no existe lo agrega
-            else
-            {    
+                // si no existe lo agrega 
                 constantTable.set(ctx.CHAR().getText(), memoryCtr.iConstantCount);
                 memoryCtr.addConstantMemorySlot();
-                quadruplerHandler.PilaO.push(constantTable.get(ctx.CHAR().getText()));
             }
+            quadruplerHandler.PilaO.push(constantTable.get(ctx.CHAR().getText()));
+            
         }
         else if(ctx.STRING())
         {
             quadruplerHandler.PTypes.push('STRING');
-            // quadruplerHandler.PilaO.push(ctx.STRING().getText());
+            // Verifica si la constante existe en la tabla
             if (constantTable.get(ctx.STRING().getText())){
-                quadruplerHandler.PilaO.push(constantTable.get(ctx.STRING().getText()));
-            }
-            // si no existe lo agrega
-            else
-            {    
+                // si no existe lo agrega 
                 constantTable.set(ctx.STRING().getText(), memoryCtr.iConstantCount);
                 memoryCtr.addConstantMemorySlot();
-                quadruplerHandler.PilaO.push(constantTable.get(ctx.STRING().getText()));
             }
+            
+                quadruplerHandler.PilaO.push(constantTable.get(ctx.STRING().getText()));
+            
         }
         else if(ctx.ID()){
             // For arrays and matrices.
@@ -319,10 +214,10 @@ class DefaultListener extends ParPlusPlusListener {
                 console.log("ID CON DIMS encontrodado" + ctx.ID().getText() + ctx.varDimensions().getText());
             }
             else
-            { 
+            {
+                //Searches for the id, and then inserts its memory allocation and type to the stacks. 
                 if(functionTable.get(currentFunction).vars.has(ctx.ID().getText())){
                     quadruplerHandler.PilaO.push(functionTable.get(currentFunction).vars.get(ctx.ID().getText()));
-                    // Insert type
                     quadruplerHandler.PTypes.push(memoryCtr.getType(quadruplerHandler.PilaO.peek()));
 
                 }else if(functionTable.get("Global").vars.has(ctx.ID().getText())){
@@ -343,8 +238,7 @@ class DefaultListener extends ParPlusPlusListener {
     }
 
     exitSemicolon(ctx) {
-        // Todo: EMPTY THE TEMPORAL MEMORY
-        // restart the initial count.
+        // Restarts Quadruple Stacks and Temporal Memory.
         memoryCtr.restartTemporalMemorySlot();
 
         while(quadruplerHandler.PilaO.size() > 0)
@@ -361,5 +255,45 @@ class DefaultListener extends ParPlusPlusListener {
         }
         
     }
+
+    makeQuadruple(){
+        let operator = quadruplerHandler.POper.peek();
+        quadruplerHandler.POper.pop();
+        let right_operand = quadruplerHandler.PilaO.peek();
+        let right_type = quadruplerHandler.PTypes.peek();
+        quadruplerHandler.PilaO.pop();
+        quadruplerHandler.PTypes.pop();
+        let left_operand = quadruplerHandler.PilaO.peek();
+        let left_type = quadruplerHandler.PTypes.peek();
+        quadruplerHandler.PilaO.pop();
+        quadruplerHandler.PTypes.pop();
+        let result_type = semanticCubeHandler.getType(operator, left_type, right_type);
+        
+        if(result_type === "ERROR"){
+            console.log("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
+        }
+        else
+        {
+            // Result is equal to a tempral 
+            let result = memoryCtr.getTemporalMemorySlot();
+
+            let quad = new Quadruple(operator,left_operand,right_operand,result,0);
+            quadruplerHandler.listQuadruples.push(quad);
+            quadruplerHandler.PilaO.push(result);
+            quadruplerHandler.PTypes.push(result_type);
+            //If left operand or right operand are temporals, that memory should be free
+                                
+            if(left_operand >= memoryCtr.temporalMemoryStartDir && left_operand <= memoryCtr.temporalMemoryEndDir){
+                //Free left_operand memory
+                memoryCtr.freeTemporalMemorySlot(left_operand);
+            }
+
+            if(right_operand >= memoryCtr.temporalMemoryStartDir && right_operand <= memoryCtr.temporalMemoryEndDir){
+                //Free left_operand memory
+                memoryCtr.freeTemporalMemorySlot(right_operand);
+            }
+        }
+    }
+
 }
 module.exports = DefaultListener;
