@@ -1,0 +1,7 @@
+Dudas
+Como habilitar recursion y manjeo de stacks entre funciones.Como
+
+
+
+1) Verificar que el manejo de la memoria virtual funcione.
+2) Crear el manejo de los cuádruplos utilizando las direcciones de memoria virtual.

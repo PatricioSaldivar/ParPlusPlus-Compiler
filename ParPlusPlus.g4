@@ -50,15 +50,18 @@ statues // Define 0 or more statues
 | ;
 
 statue // Define a statue
-: asignation SEMICOLON
-| funcCall SEMICOLON
-| returnFunc SEMICOLON
-| read SEMICOLON
-| write SEMICOLON
+: asignation semicolon
+| funcCall semicolon
+| returnFunc semicolon
+| read semicolon
+| write semicolon
 | decision
 | whileloop
 | forloop
-| expresion SEMICOLON;
+| expresion semicolon;
+
+semicolon
+: SEMICOLON;
 
 varDimensions // Get acces to a dimension of a variable
 : LB expresion RB
@@ -110,27 +113,70 @@ rarguments // Continuation of more arguments
 
 expresion // Statue of expresion
 : exp
-| exp LTEQ exp
-| exp GTEQ exp
-| exp EQ exp
-| exp NEQ exp
-| exp AND exp
-| exp OR exp
-| exp LT exp
-| exp GT exp
-| NOT exp;
+| lessThanOrEqualExp
+| greaterThanOrEqualExp
+| equalsExp
+| differentExp
+| andExp
+| orExp
+| lessThan
+| greaterThan
+| notExp;
+
+lessThanOrEqualExp
+: exp LTEQ exp;
+
+greaterThanOrEqualExp
+: exp GTEQ exp;
+
+equalsExp
+: exp EQ exp;
+
+differentExp
+: exp NEQ exp;
+
+andExp
+: exp AND exp;
+
+orExp
+: exp OR exp;
+
+lessThan
+: exp LT exp;
+
+greaterThan
+: exp GT exp;
+
+notExp
+: NOT exp;
 
 exp // A exp
-: exp PLUS termino
-| exp MINUS termino
-|termino
+: exp plus termino
+| exp minus termino
+| termino
 ;
 
+plus
+: PLUS;
+
+minus
+: MINUS;
+
 termino // A term
-: termino MULT factor
-| termino DIV factor
-| termino MOD factor
+: termino mult factor
+| termino div factor
+| termino mod factor
 | factor;
+
+mult
+: MULT;
+
+div
+: DIV;
+
+mod
+: MOD;
+
 
 factor // A factor
 : funcCall
@@ -146,8 +192,10 @@ type // Define types
 cte // Define constants
 : ID varDimensions
 | INT
-| FLOAT;
-
+| FLOAT
+| STRING
+| CHAR;
+    
 VOID: 'void';
 PROGRAM: 'program';
 MODULE: 'module';

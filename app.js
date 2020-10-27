@@ -6,7 +6,10 @@ const ParPlusPlusParser = require('./antlr4AutoGen/ParPlusPlusParser');
 // Usar llaves porque se usa exports y no module.exports
 const DefaultListener = require('./defaultListener');
 
-var input = "program Ejemplo; var int i, j, p; int arreglo[10]; float valor; int matriz[3][8]; main() {}";
+// var input = 'program Ejemplo; var int i, j, p; int arreglo[10]; float valor; int matriz[3][8]; main() { 1+2-3-4.0; \"hola\" + 'a'; i + 1; }';
+var input = "program Ejemplo; var int i, j, p; int arreglo[10]; float f, fl; char c; int matriz[3][8]; main() { 1+2-3-4.0; \"hola\" + \'a\'; 1 + 2 - (4-1);  i + j; }";
+
+
 var chars = new antlr4.InputStream(input);
 var lexer = new ParPlusPlusLexer.ParPlusPlusLexer(chars);
 var tokens  = new antlr4.CommonTokenStream(lexer);
