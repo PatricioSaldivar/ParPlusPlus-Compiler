@@ -335,6 +335,58 @@ class DefaultListener extends ParPlusPlusListener {
         quadruplerHandler.listQuadruples[ifFalse].fillDestinationDir(iCount + 1); // count 
     }
 
+
+    // ======== WHILE LOOPS ==============
+
+    enterWhilelooptwo(ctx) {
+        console.log('enter while loop two');
+        // push a la pila de saltos
+        let iCount = quadruplerHandler.listQuadruples.length;
+        quadruplerHandler.PJumps.push(iCount);
+    }
+    enterWhileloopthree(ctx) {
+        // TODO REFACTOR AND VERIFY BOOLEAN OPERATORS
+        var result;
+        //var exp_type = quadruplerHandler.PTypes.peek();
+        //quadruplerHandler.PTypes.pop();
+        console.log(quadruplerHandler.PTypes);
+        /*
+        if(exp_type !== 'BOOLEAN') {
+            throw new Error('Type Mismatched: Expected a Boolean Expression on IF.');
+        }
+        else {
+        */
+        result = quadruplerHandler.PilaO.peek();
+        quadruplerHandler.PilaO.pop();
+        //  Generar Cuádruplo
+        let quad = new Quadruple('GOTOF', result, null, -1);
+        quadruplerHandler.listQuadruples.push(quad);
+            // Test the -1
+        let iCount = quadruplerHandler.listQuadruples.length - 1;
+        quadruplerHandler.PJumps.push(iCount)
+
+        //   quadruplerHandler.listQuadruples[iCount].fill(1)
+        //}
+    }
+
+    exitWhileloop(ctx) {
+
+        // New Code
+        let endJump = quadruplerHandler.PJumps.peek();
+        quadruplerHandler.PJumps.pop();
+
+        let returnJump = quadruplerHandler.PJumps.peek();
+        quadruplerHandler.PJumps.pop();
+
+        //  Generar Cuádruplo GOTO
+        let quad = new Quadruple('GOTO', null, null, returnJump);
+        quadruplerHandler.listQuadruples.push(quad);
+
+        let currListSize = quadruplerHandler.listQuadruples.length
+        quadruplerHandler.listQuadruples[endJump].fillDestinationDir(currListSize);   
+    }
+
+
     exitExpresion(ctx) {
         console.log('I have exited expresion');
     }

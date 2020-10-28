@@ -9,7 +9,7 @@ const fs = require('fs');
 const DefaultListener = require('./defaultListener');
 
 // var input = 'program Ejemplo; var int i, j, p; int arreglo[10]; float valor; int matriz[3][8]; main() { 1+2-3-4.0; \"hola\" + 'a'; i + 1; }';
-var input = `program Ejemplo; var int i, j, p; int arreglo[10]; float f, fl; char c; int matriz[3][8]; main() { 1+2-3-4.0; "hola" + "a"; 1 + 2 - (4-1);  i + j; if (1 >= 2)  then { i * 5; 2+2;}  4-4; }`;
+var input = `program Ejemplo; var int i, j, p, myLoop; int arreglo[10]; float f, fl; char c; int matriz[3][8]; main() { 1+2-3-4.0; "hola" + "a"; 1 + 2 - (4-1);  i + j; if (1 >= 2)  then { i * 5; 2+2;}  4-4;  while (myLoop > 5) { myLoop = myLoop + 1;} }`;
 var inputFile = '';
 fs.readFile('./input/input.txt', 'utf8', function(err, data) {
     if (err) {
