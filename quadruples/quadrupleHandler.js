@@ -17,6 +17,10 @@ QuadrupleCtr.PTypes = new Stack();
 // Operands.
 QuadrupleCtr.PilaO = new Stack();
 
+// PJumps
+QuadrupleCtr.PJumps = new Stack();
+
+
 QuadrupleCtr.testPila = new Stack();
 
 /* Test Case for Stack

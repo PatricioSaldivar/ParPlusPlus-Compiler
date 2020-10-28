@@ -7,6 +7,7 @@ const semanticCube = require('./semantics/semanticCube');
 const semanticCubeHandler = require('./semantics/semanticCubeHandler');
 
 const { push } = require('./semantics/semanticCube');
+const { PilaO } = require('./quadruples/quadrupleHandler');
 
 // Use virtual memory in order to process the quadruples.
 
@@ -111,7 +112,7 @@ class DefaultListener extends ParPlusPlusListener {
     exitTermino(ctx){
         if(!quadruplerHandler.POper.isEmpty()){
             if(quadruplerHandler.POper.peek() === "*" || quadruplerHandler.POper.peek() === "/"){
-            this.makeQuadruple();
+                this.makeQuadruple();
             }
         }
     }
@@ -124,6 +125,33 @@ class DefaultListener extends ParPlusPlusListener {
     }
     exitDiv(ctx){
         quadruplerHandler.POper.push("/");
+    }
+    exitLessThanOrEqualExp(ctx){
+        quadruplerHandler.POper.push("<=");
+    }
+    exitGreaterThanOrEqualExp(ctx){
+        quadruplerHandler.POper.push(">=");
+    }
+    exitEqualsExp(ctx){
+        quadruplerHandler.POper.push("==");
+    }
+    exitDifferentExp(ctx){
+        quadruplerHandler.POper.push("!=");
+    }
+    exitAndExp(ctx){
+        quadruplerHandler.POper.push("&&");
+    }
+    exitOrExp(ctx){
+        quadruplerHandler.POper.push("||");
+    }
+    exitLessThan(ctx){
+        quadruplerHandler.POper.push("<");
+    }
+    exitGreaterThan(ctx){
+        quadruplerHandler.POper.push(">");
+    } 
+    exitNotExp(ctx){
+        quadruplerHandler.POper.push("!");
     }
 
     enterFactor(ctx){
@@ -157,7 +185,7 @@ class DefaultListener extends ParPlusPlusListener {
 
 
     // TODO: Optimize clarity by creating functions.
-    enterCte(ctx){
+    enterCte(ctx) {
         if(ctx.INT())
         {
             quadruplerHandler.PTypes.push('INT');
@@ -185,7 +213,7 @@ class DefaultListener extends ParPlusPlusListener {
         {
             quadruplerHandler.PTypes.push('CHAR');
             // Verifica si la constante existe en la tabla
-            if (constantTable.get(ctx.CHAR().getText())){
+            if (!constantTable.has(ctx.CHAR().getText())){
                 // si no existe lo agrega 
                 constantTable.set(ctx.CHAR().getText(), memoryCtr.iConstantCount);
                 memoryCtr.addConstantMemorySlot();
@@ -197,10 +225,14 @@ class DefaultListener extends ParPlusPlusListener {
         {
             quadruplerHandler.PTypes.push('STRING');
             // Verifica si la constante existe en la tabla
-            if (constantTable.get(ctx.STRING().getText())){
+            if (!constantTable.has(ctx.STRING().getText())){
+                // FLAG: Strings are not getting stored.
                 // si no existe lo agrega 
                 constantTable.set(ctx.STRING().getText(), memoryCtr.iConstantCount);
                 memoryCtr.addConstantMemorySlot();
+                console.log("---------------------------");
+                console.log(" Entra STRING");
+                console.log("---------------------------");
             }
             
                 quadruplerHandler.PilaO.push(constantTable.get(ctx.STRING().getText()));
@@ -256,6 +288,57 @@ class DefaultListener extends ParPlusPlusListener {
         
     }
 
+    // DO IFs.
+    enterDecisiontwo(ctx) {
+        // New Code
+        var result;
+        //var exp_type = quadruplerHandler.PTypes.peek();
+        //quadruplerHandler.PTypes.pop();
+        console.log(quadruplerHandler.PTypes);
+        /*
+        if(exp_type !== 'BOOLEAN') {
+            throw new Error('Type Mismatched: Expected a Boolean Expression on IF.');
+        }
+        else {
+        */
+          result = quadruplerHandler.PilaO.peek();
+          quadruplerHandler.PilaO.pop();
+          //  Generar Cuádruplo
+          let quad = new Quadruple('GOTOF', result, null, -1);
+          quadruplerHandler.listQuadruples.push(quad);
+            // Test the -1
+          let iCount = quadruplerHandler.listQuadruples.length - 1;
+          quadruplerHandler.PJumps.push(iCount)
+
+        //   quadruplerHandler.listQuadruples[iCount].fill(1)
+        //}
+    }
+
+    // Se acaba el IF
+    exitDecision(ctx) {
+        // New Code
+        let endJump = quadruplerHandler.PJumps.peek();
+        quadruplerHandler.PJumps.pop();
+        let currListSize = quadruplerHandler.listQuadruples.length
+        quadruplerHandler.listQuadruples[endJump].fillDestinationDir(currListSize);   
+    }
+
+    enterXdecision(ctx){
+        // New Code.
+        let quad = new Quadruple('GOTO', null, null, -1);
+        quadruplerHandler.listQuadruples.push(quad);
+        
+        let iCount = quadruplerHandler.listQuadruples.length - 1;
+        let ifFalse = quadruplerHandler.PJumps.peek();
+        quadruplerHandler.PJumps.pop();
+        quadruplerHandler.PJumps.push(iCount); // count - 1
+        quadruplerHandler.listQuadruples[ifFalse].fillDestinationDir(iCount + 1); // count 
+    }
+
+    exitExpresion(ctx) {
+        console.log('I have exited expresion');
+    }
+
     makeQuadruple(){
         let operator = quadruplerHandler.POper.peek();
         quadruplerHandler.POper.pop();
@@ -277,7 +360,7 @@ class DefaultListener extends ParPlusPlusListener {
             // Result is equal to a tempral 
             let result = memoryCtr.getTemporalMemorySlot();
 
-            let quad = new Quadruple(operator,left_operand,right_operand,result,0);
+            let quad = new Quadruple(operator, left_operand, right_operand, result, false, false, false);
             quadruplerHandler.listQuadruples.push(quad);
             quadruplerHandler.PilaO.push(result);
             quadruplerHandler.PTypes.push(result_type);
@@ -294,6 +377,5 @@ class DefaultListener extends ParPlusPlusListener {
             }
         }
     }
-
 }
 module.exports = DefaultListener;
