@@ -218,6 +218,15 @@ ParPlusPlusListener.prototype.exitDecision = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParPlusPlusParser#decisiontwo.
+ParPlusPlusListener.prototype.enterDecisiontwo = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#decisiontwo.
+ParPlusPlusListener.prototype.exitDecisiontwo = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParPlusPlusParser#xdecision.
 ParPlusPlusListener.prototype.enterXdecision = function(ctx) {
 };
@@ -242,6 +251,24 @@ ParPlusPlusListener.prototype.enterWhileloop = function(ctx) {
 
 // Exit a parse tree produced by ParPlusPlusParser#whileloop.
 ParPlusPlusListener.prototype.exitWhileloop = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#whilelooptwo.
+ParPlusPlusListener.prototype.enterWhilelooptwo = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#whilelooptwo.
+ParPlusPlusListener.prototype.exitWhilelooptwo = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#whileloopthree.
+ParPlusPlusListener.prototype.enterWhileloopthree = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#whileloopthree.
+ParPlusPlusListener.prototype.exitWhileloopthree = function(ctx) {
 };
 
 

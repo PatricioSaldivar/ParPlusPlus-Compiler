@@ -92,7 +92,10 @@ ywrite // Continuation of expresions or strings in write function
 | ;
 
 decision // Statue of decision functioon
-: IF LP expresion RP THEN LCB statues RCB xdecision;
+: IF LP expresion RP decisiontwo;
+
+decisiontwo // Statue of decision functioon
+: THEN LCB statues RCB xdecision;
 
 xdecision // Else function
 : ELSE LCB statues RCB
@@ -102,7 +105,13 @@ forloop // La variable debe ser declarada en el for loop
 : FOR asignation TO expresion DO LCB statues RCB;
 
 whileloop // Statue of while function
-: WHILE LP expresion RP DO LCB statues RCB;
+: WHILE whilelooptwo;
+
+whilelooptwo
+: LP expresion RP whileloopthree;
+
+whileloopthree
+: DO LCB statues RCB;
 
 arguments // Possible arguments in a function
 :expresion rarguments;
@@ -148,7 +157,7 @@ greaterThan
 : exp GT exp;
 
 notExp
-: NOT exp;
+: NOT expresion;
 
 exp // A exp
 : exp plus termino

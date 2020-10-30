@@ -1,0 +1,11 @@
+program Ejemplo; 
+var int i, j, p; 
+int arreglo[10]; 
+float f, fl; 
+char c; 
+int matriz[3][8]; 
+main() { 
+    1+2-3-4.0; \"hola\" + \'a\'; 
+    1 + 2 - (4-1);  
+    i + j; 
+}
