@@ -29,27 +29,6 @@ semanticCubeCtr.getOperandIndex = function(operand)
     else {
         console.log('ERROR: Incompatible Type');
     }
-    // switch(operand)
-    // {
-    //     case 'INT': {
-    //         iIndexOperand = 0;
-    //     }
-    //     case 'FLOAT': {
-    //         iIndexOperand = 1;
-    //     }
-    //     case 'DOUBLE': {
-    //         iIndexOperand = 2;
-    //     }
-    //     case 'BOOLEAN': {
-    //         iIndexOperand = 3;
-    //     }
-    //     case 'CHAR': {
-    //         iIndexOperand = 4;
-    //     }
-    //     case 'STRING': {
-    //         iIndexOperand = 5;
-    //     }
-    // }
     return iIndexOperand;
 }
 
@@ -59,11 +38,8 @@ semanticCubeCtr.getType = function(operator, typeOne, typeTwo)
     var indexOperator;
     var indexTypeOne = this.getOperandIndex(typeOne);
     var indexTypeTwo = this.getOperandIndex(typeTwo);
-    if(operator == '=')
-    {
-        console.log('PLUS FOUND');
-    }
-    else if (operator == '+') {
+    
+    if (operator == '+') {
         indexOperator = 0;
     }
     else if (operator == '-') {
@@ -96,7 +72,7 @@ semanticCubeCtr.getType = function(operator, typeOne, typeTwo)
     else if (operator == '||') {
         indexOperator = 10;
     }
-    else if (operator == '&') {
+    else if (operator == '&&') {
         indexOperator = 11;
     }
     else if (operator == '>') {

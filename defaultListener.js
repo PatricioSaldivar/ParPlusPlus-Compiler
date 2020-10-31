@@ -24,6 +24,7 @@ let constantTable = new Map();
 
 let currentFunction = "Global";
 let currentType = "";
+let forLoopIDHelper;
 
 class DefaultListener extends ParPlusPlusListener {
     
@@ -94,6 +95,23 @@ class DefaultListener extends ParPlusPlusListener {
 
 
     // ========= Creacion de cuadroplus ====================
+    exitExpresion(ctx){
+        if(!quadruplerHandler.POper.isEmpty()){
+            if(quadruplerHandler.POper.peek() === ">" 
+            || quadruplerHandler.POper.peek() === "<" 
+            || quadruplerHandler.POper.peek() === "<=" 
+            || quadruplerHandler.POper.peek() === ">=" 
+            || quadruplerHandler.POper.peek() === "=="
+            || quadruplerHandler.POper.peek() === "!="
+            || quadruplerHandler.POper.peek() === "&&"
+            || quadruplerHandler.POper.peek() === "||"
+            || quadruplerHandler.POper.peek() === "!"){
+                this.makeQuadruple();
+            }
+        }
+    }
+
+
     exitExp(ctx){
         if(!quadruplerHandler.POper.isEmpty()){
             if(quadruplerHandler.POper.peek() === "+" || quadruplerHandler.POper.peek() === "-"){
@@ -152,6 +170,45 @@ class DefaultListener extends ParPlusPlusListener {
     } 
     exitNotExp(ctx){
         quadruplerHandler.POper.push("!");
+    }
+    exitAsignation(ctx){
+        let result;
+        let result_type;
+        if(ctx.varDimensions().children)
+        {
+            //Assign value to array
+            console.log("ID CON DIMS encontrodado" + ctx.ID().getText() + ctx.varDimensions().getText());
+        }
+        else
+        {
+            //Searches for the id, and then inserts its memory allocation and type to the stacks. 
+            if(functionTable.get(currentFunction).vars.has(ctx.ID().getText())){
+               result = functionTable.get(currentFunction).vars.get(ctx.ID().getText());
+               result_type = memoryCtr.getType(result);
+
+            }else if(functionTable.get("Global").vars.has(ctx.ID().getText())){
+                result = functionTable.get("Global").vars.get(ctx.ID().getText());
+                result_type = memoryCtr.getType(result);
+
+            }else{
+                console.log('HERE');
+                console.log("ERROR, variable with ID: " + ctx.ID().getText() + " not found" );
+                console.log(functionTable.get("Global").vars);
+                console.log("-----------------");
+                console.log(typeof functionTable.get("Global").vars.get(ctx.ID().getText()));
+            }
+            let left_operand = quadruplerHandler.PilaO.peek();
+            let left_type = quadruplerHandler.PTypes.peek();
+            quadruplerHandler.PilaO.pop();
+            quadruplerHandler.PTypes.pop();
+            result_type = semanticCubeHandler.getType("=", result_type, left_type);
+            if(result_type === "ERROR"){
+                console.log("Assignation Error");
+            }else{
+            let quad = new Quadruple("=",left_operand,null, result, false, false, false);
+            quadruplerHandler.listQuadruples.push(quad);
+            }
+        }
     }
 
     enterFactor(ctx){
@@ -230,9 +287,6 @@ class DefaultListener extends ParPlusPlusListener {
                 // si no existe lo agrega 
                 constantTable.set(ctx.STRING().getText(), memoryCtr.iConstantCount);
                 memoryCtr.addConstantMemorySlot();
-                console.log("---------------------------");
-                console.log(" Entra STRING");
-                console.log("---------------------------");
             }
             
                 quadruplerHandler.PilaO.push(constantTable.get(ctx.STRING().getText()));
@@ -258,12 +312,7 @@ class DefaultListener extends ParPlusPlusListener {
 
                 }else{
                     // TODO: Stop execution when there is an error.
-                    // throw new Error('Variable Not Found');
-                    console.log('HERE');
                     console.log("ERROR, variable with ID: " + ctx.ID().getText() + " not found" );
-                    console.log(functionTable.get("Global").vars);
-                    console.log("-----------------");
-                    console.log(typeof functionTable.get("Global").vars.get(ctx.ID().getText()));
                 }
             }
         }
@@ -290,17 +339,16 @@ class DefaultListener extends ParPlusPlusListener {
 
     // DO IFs.
     enterDecisiontwo(ctx) {
-        // TODO REFACTOR AND VERIFY BOOLEAN OPERATORS
+        // TODO REFACTOR
         var result;
-        //var exp_type = quadruplerHandler.PTypes.peek();
-        //quadruplerHandler.PTypes.pop();
-        console.log(quadruplerHandler.PTypes);
-        /*
-        if(exp_type !== 'BOOLEAN') {
+        var exp_type = quadruplerHandler.PTypes.peek();
+        quadruplerHandler.PTypes.pop();
+        
+        if(exp_type === 'CHAR' || exp_type === 'STRING') {
             throw new Error('Type Mismatched: Expected a Boolean Expression on IF.');
         }
         else {
-        */
+        
           result = quadruplerHandler.PilaO.peek();
           quadruplerHandler.PilaO.pop();
           //  Generar Cuádruplo
@@ -309,9 +357,7 @@ class DefaultListener extends ParPlusPlusListener {
             // Test the -1
           let iCount = quadruplerHandler.listQuadruples.length - 1;
           quadruplerHandler.PJumps.push(iCount)
-
-        //   quadruplerHandler.listQuadruples[iCount].fill(1)
-        //}
+        }
     }
 
     // Se acaba el IF
@@ -339,38 +385,33 @@ class DefaultListener extends ParPlusPlusListener {
     // ======== WHILE LOOPS ==============
 
     enterWhilelooptwo(ctx) {
-        console.log('enter while loop two');
         // push a la pila de saltos
         let iCount = quadruplerHandler.listQuadruples.length;
         quadruplerHandler.PJumps.push(iCount);
     }
+
     enterWhileloopthree(ctx) {
         // TODO REFACTOR AND VERIFY BOOLEAN OPERATORS
         var result;
-        //var exp_type = quadruplerHandler.PTypes.peek();
-        //quadruplerHandler.PTypes.pop();
-        console.log(quadruplerHandler.PTypes);
-        /*
-        if(exp_type !== 'BOOLEAN') {
+        var exp_type = quadruplerHandler.PTypes.peek();
+        quadruplerHandler.PTypes.pop();
+        
+        if(exp_type === 'CHAR' || exp_type === 'STRING') {
             throw new Error('Type Mismatched: Expected a Boolean Expression on IF.');
         }
         else {
-        */
         result = quadruplerHandler.PilaO.peek();
         quadruplerHandler.PilaO.pop();
         //  Generar Cuádruplo
         let quad = new Quadruple('GOTOF', result, null, -1);
         quadruplerHandler.listQuadruples.push(quad);
-            // Test the -1
+        // Test the -1
         let iCount = quadruplerHandler.listQuadruples.length - 1;
         quadruplerHandler.PJumps.push(iCount)
-
-        //   quadruplerHandler.listQuadruples[iCount].fill(1)
-        //}
+        }
     }
 
     exitWhileloop(ctx) {
-
         // New Code
         let endJump = quadruplerHandler.PJumps.peek();
         quadruplerHandler.PJumps.pop();
@@ -386,10 +427,87 @@ class DefaultListener extends ParPlusPlusListener {
         quadruplerHandler.listQuadruples[endJump].fillDestinationDir(currListSize);   
     }
 
+    // ================== FOR LOOP ===========================
 
-    exitExpresion(ctx) {
-        console.log('I have exited expresion');
+    enterForloop(ctx){
+        if(functionTable.get(currentFunction).vars.has(ctx.asignation().ID().getText())){
+            forLoopIDHelper = functionTable.get(currentFunction).vars.get(ctx.asignation().ID().getText());
+
+        }else if(functionTable.get("Global").vars.has(ctx.asignation().ID().getText())){
+            forLoopIDHelper = functionTable.get("Global").vars.get(ctx.asignation().ID().getText());
+        }
     }
+
+    enterForlooptwo(ctx){
+                // push a la pila de saltos
+                let iCount = quadruplerHandler.listQuadruples.length;
+                quadruplerHandler.PJumps.push(iCount);
+    }
+
+    enterForloopthree(ctx){
+        quadruplerHandler.POper.push("==");
+        quadruplerHandler.PilaO.push(forLoopIDHelper);
+        quadruplerHandler.PTypes.push(memoryCtr.getType(quadruplerHandler.PilaO.peek()));
+        this.makeQuadruple();
+        var result;
+        var exp_type = quadruplerHandler.PTypes.peek();
+        quadruplerHandler.PTypes.pop();
+        
+        if(exp_type === 'CHAR' || exp_type === 'STRING') {
+            throw new Error('Type Mismatched: Expected a Boolean Expression on IF.');
+        }
+        else {
+        result = quadruplerHandler.PilaO.peek();
+        quadruplerHandler.PilaO.pop();
+        //  Generar Cuádruplo
+        let quad = new Quadruple('GOTOF', result, null, -1);
+        quadruplerHandler.listQuadruples.push(quad);
+        // Test the -1
+        let iCount = quadruplerHandler.listQuadruples.length - 1;
+        quadruplerHandler.PJumps.push(iCount)
+        }
+    }
+
+    exitForloop(ctx){
+        let endJump = quadruplerHandler.PJumps.peek();
+        quadruplerHandler.PJumps.pop();        
+        let returnJump = quadruplerHandler.PJumps.peek();
+        quadruplerHandler.PJumps.pop();
+
+        //  Generar Cuádruplo GOTO
+        if(!constantTable.has("1")){
+            // si no existe lo agrega
+           constantTable.set("1");
+           memoryCtr.addConstantMemorySlot();
+        }
+
+        if(functionTable.get(currentFunction).vars.has(ctx.asignation().ID().getText())){
+            quadruplerHandler.PilaO.push(functionTable.get(currentFunction).vars.get(ctx.asignation().ID().getText()));
+            quadruplerHandler.PilaO.push(functionTable.get(currentFunction).vars.get(ctx.asignation().ID().getText()));
+
+        }else if(functionTable.get("Global").vars.has(ctx.asignation().ID().getText())){
+            quadruplerHandler.PilaO.push(functionTable.get("Global").vars.get(ctx.asignation().ID().getText()));
+            quadruplerHandler.PilaO.push(functionTable.get("Global").vars.get(ctx.asignation().ID().getText()));
+        }
+        quadruplerHandler.PTypes.push(memoryCtr.getType(quadruplerHandler.PilaO.peek()));
+        quadruplerHandler.PTypes.push(memoryCtr.getType(quadruplerHandler.PilaO.peek()));
+
+        quadruplerHandler.POper.push("=");
+        quadruplerHandler.POper.push("+");
+
+        quadruplerHandler.PTypes.push("INT");
+        quadruplerHandler.PilaO.push(constantTable.get("1"));
+
+        this.makeQuadruple();
+        this.makeQuadruple();
+        let quad = new Quadruple('GOTO', null, null, returnJump);
+        quadruplerHandler.listQuadruples.push(quad);
+
+        let currListSize = quadruplerHandler.listQuadruples.length
+        quadruplerHandler.listQuadruples[endJump].fillDestinationDir(currListSize);  
+    }
+
+
 
     makeQuadruple(){
         let operator = quadruplerHandler.POper.peek();
@@ -398,35 +516,48 @@ class DefaultListener extends ParPlusPlusListener {
         let right_type = quadruplerHandler.PTypes.peek();
         quadruplerHandler.PilaO.pop();
         quadruplerHandler.PTypes.pop();
-        let left_operand = quadruplerHandler.PilaO.peek();
-        let left_type = quadruplerHandler.PTypes.peek();
-        quadruplerHandler.PilaO.pop();
-        quadruplerHandler.PTypes.pop();
-        let result_type = semanticCubeHandler.getType(operator, left_type, right_type);
-        
-        if(result_type === "ERROR"){
-            console.log("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
+        if(operator === "!"){
+            if(right_type === "STRING" || right_type === "CHAR" ){
+                console.log("ERROR, cant do ! to a CHAR or a STRING");
+            }else{
+                let result = memoryCtr.getTemporalMemorySlot();
+                let quad = new Quadruple(operator, right_operand, null, result, false, false, false);
+                quadruplerHandler.listQuadruples.push(quad);
+                quadruplerHandler.PilaO.push(result);
+                let result_type = semanticCubeHandler.getType(operator, right_type, right_type);
+                quadruplerHandler.PTypes.push(result_type);
+            }
+        }else{
+            let left_operand = quadruplerHandler.PilaO.peek();
+            let left_type = quadruplerHandler.PTypes.peek();
+            quadruplerHandler.PilaO.pop();
+            quadruplerHandler.PTypes.pop();
+            let result_type = semanticCubeHandler.getType(operator, left_type, right_type);
+            
+            if(result_type === "ERROR"){
+                console.log("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
+            }
+            else
+            {
+                // Result is equal to a tempral 
+                let result = memoryCtr.getTemporalMemorySlot();
+    
+                let quad = new Quadruple(operator, left_operand, right_operand, result, false, false, false);
+                quadruplerHandler.listQuadruples.push(quad);
+                quadruplerHandler.PilaO.push(result);
+                quadruplerHandler.PTypes.push(result_type);
+                //If left operand or right operand are temporals, that memory should be free
+                                    
+                if(left_operand >= memoryCtr.temporalMemoryStartDir && left_operand <= memoryCtr.temporalMemoryEndDir){
+                    //Free left_operand memory
+                    memoryCtr.freeTemporalMemorySlot(left_operand);
+                }
+            }
         }
-        else
-        {
-            // Result is equal to a tempral 
-            let result = memoryCtr.getTemporalMemorySlot();
-
-            let quad = new Quadruple(operator, left_operand, right_operand, result, false, false, false);
-            quadruplerHandler.listQuadruples.push(quad);
-            quadruplerHandler.PilaO.push(result);
-            quadruplerHandler.PTypes.push(result_type);
-            //If left operand or right operand are temporals, that memory should be free
-                                
-            if(left_operand >= memoryCtr.temporalMemoryStartDir && left_operand <= memoryCtr.temporalMemoryEndDir){
-                //Free left_operand memory
-                memoryCtr.freeTemporalMemorySlot(left_operand);
-            }
-
-            if(right_operand >= memoryCtr.temporalMemoryStartDir && right_operand <= memoryCtr.temporalMemoryEndDir){
-                //Free left_operand memory
-                memoryCtr.freeTemporalMemorySlot(right_operand);
-            }
+        
+        if(right_operand >= memoryCtr.temporalMemoryStartDir && right_operand <= memoryCtr.temporalMemoryEndDir){
+            //Free left_operand memory
+            memoryCtr.freeTemporalMemorySlot(right_operand);
         }
     }
 }

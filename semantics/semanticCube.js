@@ -466,52 +466,22 @@ arrSemanticCube[opEnum.NEQ][typesEnum.STRING][typesEnum.STRING] = 'BOOLEAN' // C
 
 
 
-/* 
+
 // =============== NOT OPERATOR (Not '!' ) ===============
     // INT  
-arrSemanticCube[opEnum.NOT][typesEnum.INT][typesEnum.INT] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.INT][typesEnum.FLOAT] = 'BOOLEAN';
-arrSemanticCube[opEnum.NOT][typesEnum.INT][typesEnum.DOUBLE] = 'BOOLEAN';
-arrSemanticCube[opEnum.NOT][typesEnum.INT][typesEnum.BOOLEAN] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.INT][typesEnum.CHAR] = 'ERROR'; 
-arrSemanticCube[opEnum.NOT][typesEnum.INT][typesEnum.STRING] = 'ERROR';
+arrSemanticCube[opEnum.NOT][typesEnum.INT][typesEnum.INT] = 'BOOLEAN';
     // FLOAT
-arrSemanticCube[opEnum.NOT][typesEnum.FLOAT][typesEnum.INT] = 'BOOLEAN';
 arrSemanticCube[opEnum.NOT][typesEnum.FLOAT][typesEnum.FLOAT] = 'BOOLEAN';
-arrSemanticCube[opEnum.NOT][typesEnum.FLOAT][typesEnum.DOUBLE] = 'BOOLEAN';
-arrSemanticCube[opEnum.NOT][typesEnum.FLOAT][typesEnum.BOOLEAN] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.FLOAT][typesEnum.CHAR] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.FLOAT][typesEnum.STRING] = 'ERROR';
     // DOUBLE
-arrSemanticCube[opEnum.NOT][typesEnum.DOUBLE][typesEnum.INT] = 'BOOLEAN';
-arrSemanticCube[opEnum.NOT][typesEnum.DOUBLE][typesEnum.FLOAT] = 'BOOLEAN';
 arrSemanticCube[opEnum.NOT][typesEnum.DOUBLE][typesEnum.DOUBLE] = 'BOOLEAN';
-arrSemanticCube[opEnum.NOT][typesEnum.DOUBLE][typesEnum.BOOLEAN] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.DOUBLE][typesEnum.CHAR] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.DOUBLE][typesEnum.STRING] = 'ERROR';
     // BOOLEAN
-arrSemanticCube[opEnum.NOT][typesEnum.BOOLEAN][typesEnum.INT] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.BOOLEAN][typesEnum.FLOAT] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.BOOLEAN][typesEnum.DOUBLE] = 'ERROR';
 arrSemanticCube[opEnum.NOT][typesEnum.BOOLEAN][typesEnum.BOOLEAN] = 'BOOLEAN'; // Here
-arrSemanticCube[opEnum.NOT][typesEnum.BOOLEAN][typesEnum.CHAR] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.BOOLEAN][typesEnum.STRING] = 'ERROR'
     // CHAR
-arrSemanticCube[opEnum.NOT][typesEnum.CHAR][typesEnum.INT] = 'ERROR'; 
-arrSemanticCube[opEnum.NOT][typesEnum.CHAR][typesEnum.FLOAT] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.CHAR][typesEnum.DOUBLE] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.CHAR][typesEnum.BOOLEAN] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.CHAR][typesEnum.CHAR] = 'BOOLEAN';  // Check
-arrSemanticCube[opEnum.NOT][typesEnum.CHAR][typesEnum.STRING] = 'BOOLEAN'
+arrSemanticCube[opEnum.NOT][typesEnum.CHAR][typesEnum.CHAR] = 'ERROR';  // Check
     // STRING
-arrSemanticCube[opEnum.NOT][typesEnum.STRING][typesEnum.INT] = 'ERROR'; 
-arrSemanticCube[opEnum.NOT][typesEnum.STRING][typesEnum.FLOAT] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.STRING][typesEnum.DOUBLE] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.STRING][typesEnum.BOOLEAN] = 'ERROR';
-arrSemanticCube[opEnum.NOT][typesEnum.STRING][typesEnum.CHAR] = 'BOOLEAN';  
-arrSemanticCube[opEnum.NOT][typesEnum.STRING][typesEnum.STRING] = 'BOOLEAN' // Concatenate String
+arrSemanticCube[opEnum.NOT][typesEnum.STRING][typesEnum.STRING] = 'ERROR' // Concatenate String
 // =============== END NOT (Not !) ====================
-*/
+
 
 
 // =============== OR OPERATOR (OR || ) ===============

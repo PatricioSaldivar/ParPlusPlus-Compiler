@@ -185,9 +185,6 @@ memoryCtr.addConstantMemorySlot = function() {
 
 memoryCtr.freeTemporalMemorySlot = function(i) {
     iTemporalMemoryList.push(i);
-    console.log("---------------------------");
-    console.log("Space: " + i + "free");
-    console.log("---------------------------");
 }
 
 memoryCtr.restartTemporalMemorySlot = function(i) {

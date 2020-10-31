@@ -102,7 +102,13 @@ xdecision // Else function
 | ;
 
 forloop // La variable debe ser declarada en el for loop
-: FOR asignation TO expresion DO LCB statues RCB;
+: FOR asignation forlooptwo;
+
+forlooptwo
+:TO expresion forloopthree; 
+
+forloopthree
+:DO LCB statues RCB;
 
 whileloop // Statue of while function
 : WHILE whilelooptwo;
@@ -122,42 +128,42 @@ rarguments // Continuation of more arguments
 
 expresion // Statue of expresion
 : exp
-| lessThanOrEqualExp
-| greaterThanOrEqualExp
-| equalsExp
-| differentExp
-| andExp
-| orExp
-| lessThan
-| greaterThan
-| notExp;
+| exp lessThanOrEqualExp exp
+| exp greaterThanOrEqualExp exp
+| exp equalsExp exp
+| exp differentExp exp
+| exp andExp exp
+| exp orExp exp
+| exp lessThan exp
+| exp greaterThan exp
+| notExp expresion;
 
 lessThanOrEqualExp
-: exp LTEQ exp;
+: LTEQ;
 
 greaterThanOrEqualExp
-: exp GTEQ exp;
+: GTEQ;
 
 equalsExp
-: exp EQ exp;
+: EQ;
 
 differentExp
-: exp NEQ exp;
+: NEQ;
 
 andExp
-: exp AND exp;
+: AND;
 
 orExp
-: exp OR exp;
+: OR;
 
 lessThan
-: exp LT exp;
+: LT;
 
 greaterThan
-: exp GT exp;
+: GT;
 
 notExp
-: NOT expresion;
+: NOT;
 
 exp // A exp
 : exp plus termino
