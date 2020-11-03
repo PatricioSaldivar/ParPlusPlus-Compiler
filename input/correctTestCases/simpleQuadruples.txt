@@ -1,0 +1,10 @@
+program Ejemplo; 
+var 
+int i;
+
+int a, b, c, d, e, f, g, h;
+
+main() { 
+   a + b * (d + c) / e > b + c * d / h - g;
+}
+

@@ -1,0 +1,9 @@
+
+
+Bug Tickets
+• B001: AT IFs: Quadruples were failing at GoTo destination address (FILL method)
+• B002: AT WHILE LOOPS: Quadruples were failing at GoTo destination address (FILL method)
+
+
+Suspicion:
+Equal operator resetting memory.

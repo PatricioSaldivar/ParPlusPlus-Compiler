@@ -1,0 +1,13 @@
+program Ejemplo; 
+var 
+int i;
+
+int a, b, c, d, e, f, g, h;
+main() { 
+    while (a > b * c)
+    {
+        a = a - d;
+        f + g;
+    }
+    b = c + a;
+}
