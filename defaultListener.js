@@ -10,8 +10,6 @@ const { push } = require('./semantics/semanticCube');
 const { PilaO } = require('./quadruples/quadrupleHandler');
 
 // Use virtual memory in order to process the quadruples.
-
-
 let functionTable = new Map();
 
 // The vars table saves the ID and the type.
@@ -31,6 +29,9 @@ class DefaultListener extends ParPlusPlusListener {
     enterProgram(ctx) {
         // console.log('children CTX');
         // console.log(ctx);
+        let quad = new Quadruple('GOTO', null, null, -1);
+        quadruplerHandler.listQuadruples.push(quad);
+        quadruplerHandler.PJumps.push(0);
     }
     exitProgram(ctx){
         console.log(functionTable);
@@ -38,26 +39,38 @@ class DefaultListener extends ParPlusPlusListener {
         console.log(quadruplerHandler.listQuadruples);
     }
 
+    enterMain(ctx){
+        let startMain = quadruplerHandler.PJumps.peek();
+        quadruplerHandler.PJumps.pop();
+        let lastQuad = quadruplerHandler.listQuadruples.length;
+        quadruplerHandler.listQuadruples[startMain].fillDestinationDir(lastQuad);
+
+    }
     // Function block
     enterFuncBlock(ctx){
-        
         // Verify that function block is not empty
         if(ctx.children) {
 
         // Check if function ID already exists
-        if(functionTable.get(ctx.ID().getText()) != undefined){
-            console.log(`ERROR, ID ${ctx.ID().getText()} already exists`);
-            return;
+            if(functionTable.get(ctx.ID().getText()) != undefined){
+                console.log(`ERROR, ID ${ctx.ID().getText()} already exists`);
+                return;
+            }
+            let type = !!ctx.type()? ctx.type().getText() : ctx.VOID().getText();
+            // Enter function to funtion table
+            functionTable.set(ctx.ID().getText(), {
+                type: type,
+                vars: new Map(),
+                starts: quadruplerHandler.listQuadruples.length,
+                params: 0,
+            });
+            currentFunction = ctx.ID().getText(); 
         }
-        // Enter function to funtion table
-        functionTable.set(ctx.ID().getText(), {
-            type: ctx.type().getText(),
-            vars: new Map(),
-        });
-        // Set current function to self so the variables cold be declare inside it.
-        currentFunction = ctx.ID().getText();
-        memoryCtr.deleteLocalMemory;
-        }
+    }
+    enterVarBlock(ctx){
+        let value = functionTable.get(currentFunction);
+        value.params = functionTable.get(currentFunction).vars.size;
+        functionTable.set(currentFunction,value);
     }
 
     // Enter variable creation block
@@ -65,6 +78,30 @@ class DefaultListener extends ParPlusPlusListener {
         // Set the type of variable or variables that will be declared.
         currentType = ctx.type().getText();
         currentType = currentType.toUpperCase();
+    }
+
+    enterParams(ctx){
+        if(ctx.children){
+            currentType = ctx.type().getText();
+            currentType = currentType.toUpperCase();
+            // Check any variable direction overflow in the memory
+            let newDir = memoryCtr.setDirection(currentType, currentFunction);
+            if (newDir === -1)
+            {
+                console.log('ERROR, Variable declaration overflow');
+            }
+            // Single Variable
+            else if (ctx.varDimensionsInit != undefined)
+            {
+                // FLAG
+                functionTable.get(currentFunction).vars.set(ctx.ID().getText(),newDir);
+            }
+            // List or Matrix variable
+            else {
+                functionTable.get(currentFunction).vars.set(ctx.ID().getText(), newDir);
+            }
+        }
+
     }
 
     //Declare a variable

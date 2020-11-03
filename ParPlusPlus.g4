@@ -27,9 +27,14 @@ yvars //Continuation of another variable of same type
 | ;
 
 funcBlock // Declare a function
-: type MODULE ID LP params RP varBlock LCB statues RCB funcBlock
+: type MODULE ID LP params RP varBlock LCB statuesWithReturn RCB funcBlock
 | VOID MODULE ID LP params RP varBlock LCB statues RCB funcBlock
 | ;
+
+
+funcType
+: type
+| VOID;
 
 params // Declare parameters
 : type ID rparams
@@ -49,10 +54,13 @@ statues // Define 0 or more statues
 :statue statues
 | ;
 
+statuesWithReturn
+: statue statuesWithReturn
+| returnFunc semicolon;
+
 statue // Define a statue
 : asignation semicolon
 | funcCall semicolon
-| returnFunc semicolon
 | read semicolon
 | write semicolon
 | decision

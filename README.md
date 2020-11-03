@@ -13,3 +13,4 @@ Entregas: <br />
 :white_large_square: 9.- Crear llamadas a funciones. <br />
 :white_large_square: 10.- Crear estructura de datos para manejar memoria local. <br />
 :white_large_square: 11.- Optimizar codigo para liberacion de memoria y repeticiones de funciones. <br />
+:white_large_square: 12.- Manejo de cuádruplos para funciones (falta manejar return de endfunc y ver lo de ERA) <br />

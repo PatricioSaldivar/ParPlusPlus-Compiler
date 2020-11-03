@@ -83,6 +83,15 @@ ParPlusPlusListener.prototype.exitFuncBlock = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParPlusPlusParser#funcType.
+ParPlusPlusListener.prototype.enterFuncType = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#funcType.
+ParPlusPlusListener.prototype.exitFuncType = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParPlusPlusParser#params.
 ParPlusPlusListener.prototype.enterParams = function(ctx) {
 };
@@ -116,6 +125,15 @@ ParPlusPlusListener.prototype.enterStatues = function(ctx) {
 
 // Exit a parse tree produced by ParPlusPlusParser#statues.
 ParPlusPlusListener.prototype.exitStatues = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#statuesWithReturn.
+ParPlusPlusListener.prototype.enterStatuesWithReturn = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#statuesWithReturn.
+ParPlusPlusListener.prototype.exitStatuesWithReturn = function(ctx) {
 };
 
 

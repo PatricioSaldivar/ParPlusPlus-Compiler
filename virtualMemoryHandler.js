@@ -11,7 +11,7 @@ const localCharStartDir = 5000;
 const endMemory = 6000;
 
 // Temporal Memory. (no separar por tipos)
-const temporalMemoryStartDir = 7000;
+const temporalMemoryStartDir = 7001;
 
 // Constant Memory. (no separar por tipos)
 const constMemoryStartDir = 9000;
