@@ -7,7 +7,7 @@ char c;
 int matriz[3][8]; 
 
 int module uno(int a) 
-var int x, y, z;
+var int x, y, z; float fFloat;
 {
     x = a+y*z;
     return (x);
@@ -22,7 +22,12 @@ char module tres(){
     return ('c');
 }
 
+char module cuatro(char myChar){
+    return (myChar);
+}
+
 main() { 
+    cuatro('c');
     if (! 1>= 2)  then { 
         i * 5; 2+2;
     } 

@@ -127,6 +127,7 @@ memoryCtr.addLocalCharMemorySlot = function() {
 // =============== Assign Handler ===========================
 memoryCtr.setDirection = function(type, currentScope){
     let dir = -1;
+    // console.log('type is: ' + type + ' | CurrScope is: ' + currentScope);
     if(type === "INT"){
         if(currentScope === "Global"){
             dir = memoryCtr.iGlobalIntCount;
@@ -135,6 +136,17 @@ memoryCtr.setDirection = function(type, currentScope){
         }else{
             dir = memoryCtr.iLocalIntCount;
             memoryCtr.addLocalIntMemorySlot();
+            return dir;
+        }
+        // Bug Fix: Added Float memory management.
+    }else if(type === "FLOAT"){
+        if(currentScope === "Global"){
+            dir = memoryCtr.iGlobalFloatCount;
+            memoryCtr.addGlobalFloatMemorySlot();
+            return dir;
+        }else{
+            dir = memoryCtr.iLocalFloatCount;
+            memoryCtr.addLocalFloatMemorySlot();
             return dir;
         }
     }else if(type === "CHAR"){

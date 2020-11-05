@@ -27,9 +27,12 @@ yvars //Continuation of another variable of same type
 | ;
 
 funcBlock // Declare a function
-: type MODULE ID LP params RP varBlock LCB statuesWithReturn RCB funcBlock
-| VOID MODULE ID LP params RP varBlock LCB statues RCB funcBlock
+: type MODULE ID LP params RP varBlock LCB statuesWithReturn RCB funcEnd funcBlock
+| VOID MODULE ID LP params RP varBlock LCB statues RCB funcEnd funcBlock
 | ;
+
+funcEnd
+: ;
 
 
 funcType
