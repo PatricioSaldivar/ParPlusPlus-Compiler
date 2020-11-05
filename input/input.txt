@@ -43,5 +43,5 @@ main() {
     j = j + 2;
     uno(1);
     i = j + 2;
-    dos(1);
+    dos(uno(1));
 }
