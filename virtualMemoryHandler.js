@@ -139,7 +139,6 @@ memoryCtr.setDirection = function(type, currentScope){
             return dir;
         }
         // Bug Fix: Added Float memory management.
-    }else if(type === "FLOAT"){
         if(currentScope === "Global"){
             dir = memoryCtr.iGlobalFloatCount;
             memoryCtr.addGlobalFloatMemorySlot();
@@ -198,6 +197,7 @@ memoryCtr.addConstantMemorySlot = function() {
 memoryCtr.freeTemporalMemorySlot = function(i) {
     iTemporalMemoryList.push(i);
 }
+
 
 memoryCtr.restartTemporalMemorySlot = function(i) {
     iTemporalMemoryList = [];

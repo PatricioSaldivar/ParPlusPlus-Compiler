@@ -131,11 +131,13 @@ whileloopthree
 : DO LCB statues RCB;
 
 arguments // Possible arguments in a function
-:expresion rarguments;
+:expresion rarguments
+| ;
 
 rarguments // Continuation of more arguments
-: COMMA arguments
+: COMMA expresion rarguments
 | ;
+
 
 expresion // Statue of expresion
 : exp

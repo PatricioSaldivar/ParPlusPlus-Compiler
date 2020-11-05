@@ -1,6 +1,6 @@
 program Ejemplo; 
 var 
-int i, j, p, myLoop; 
+int i, j, p, myLoop, uno, tres; 
 int arreglo[10]; 
 float f, fl; 
 char c; 
@@ -43,5 +43,5 @@ main() {
     j = j + 2;
     uno(1);
     i = j + 2;
-    dos(uno(1));
+    dos(1);
 }

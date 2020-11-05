@@ -27,7 +27,7 @@ let forLoopIDHelper;
 
 let iCurrParamMap = 0;
 let iCountParam = 0;
-
+//TODO make stack of current functions
 let currentFunctionCall = "";
 
 
@@ -77,7 +77,8 @@ class DefaultListener extends ParPlusPlusListener {
                 localVars: new Map(),
                 starts: quadruplerHandler.listQuadruples.length,
                 iParams: 0,
-                iLocalVars: 0
+                iLocalVars: 0,
+                iTemps: 0
             });
             currentFunction = ctx.ID().getText(); 
         }
@@ -103,11 +104,12 @@ class DefaultListener extends ParPlusPlusListener {
      exitReturnFunc(ctx){
         // Step 1: Generate a return quadruple
         // TODO BUG: Return falla cuando pones solo return 1 o return 'c'.
-        let returnMemDir = listQuadruples[listQuadruples.length - 1].iDirThree;
-        let quad = new Quadruple('RETURN', returnMemDir, null, null);
+        // let returnMemDir = listQuadruples[listQuadruples.length - 1].iDirThree;
+        let quad = new Quadruple('RETURN', quadruplerHandler.PilaO.peek(), null, null);
         quadruplerHandler.listQuadruples.push(quad);
         // Add the return memory direction.
-        functionTable.get("Global").vars.set(currentFunction, returnMemDir);
+        // BUG: Todo: Checar cuando pones int uno; y una función que se llame uno().
+        functionTable.get("Global").vars.set(currentFunction, quadruplerHandler.PilaO.peek());
     }
 
 
@@ -134,15 +136,21 @@ class DefaultListener extends ParPlusPlusListener {
    }
 
    exitArguments(ctx) {
-    iCurrParamMap = 0;
-    iCountParam = 0;
+       if(iCountParam != functionTable.get(currentFunctionCall).iParams){
+           throw Error(`Error arguments, given  ${iCountParam} arguments for a function of ${functionTable.get(currentFunctionCall).iParams} parameters`);
+       }
+        iCurrParamMap = 0;
+        iCountParam = 0;
    }
 
     // We have an argument
     enterRarguments(ctx) {
+
         // k is an array, [0] is parameter name, [1] is parameter dir.
         let k = iCurrParamMap.next().value
         iCountParam++;
+
+        //uno( dos( 2, 5 ) )
 
         let argument = quadruplerHandler.PilaO.peek();
         quadruplerHandler.PilaO.pop();
