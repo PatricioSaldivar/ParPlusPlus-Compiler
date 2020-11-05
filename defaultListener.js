@@ -24,10 +24,10 @@ let constantTable = new Map();
 let currentFunction = "Global";
 let currentType = "";
 let forLoopIDHelper;
-
+//TODO make stacks
 let iCurrParamMap = 0;
 let iCountParam = 0;
-//TODO make stack of current functions
+//--------------------
 let currentFunctionCall = "";
 
 
