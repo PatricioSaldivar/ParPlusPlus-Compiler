@@ -16,6 +16,7 @@ let functionTable = new Map();
 functionTable.set("Global", {
     type: "void",
     vars: new Map(),
+    localVars: new Map(),
 });
 
 let constantTable = new Map();
@@ -23,6 +24,12 @@ let constantTable = new Map();
 let currentFunction = "Global";
 let currentType = "";
 let forLoopIDHelper;
+
+let iCurrParamMap = 0;
+let iCountParam = 0;
+
+let currentFunctionCall = "";
+
 
 class DefaultListener extends ParPlusPlusListener {
     
@@ -35,7 +42,11 @@ class DefaultListener extends ParPlusPlusListener {
     }
     exitProgram(ctx){
         console.log(functionTable);
+        console.log('———————————————————————————————————————');
         console.log(constantTable);
+        console.log('');
+        console.log('');
+        console.log('———————————————————————————————————————');
         console.log(quadruplerHandler.listQuadruples);
     }
 
@@ -61,6 +72,9 @@ class DefaultListener extends ParPlusPlusListener {
             functionTable.set(ctx.ID().getText(), {
                 type: type,
                 vars: new Map(),
+                // NEW
+                params: new Map(),
+                localVars: new Map(),
                 starts: quadruplerHandler.listQuadruples.length,
                 iParams: 0,
                 iLocalVars: 0
@@ -98,6 +112,7 @@ class DefaultListener extends ParPlusPlusListener {
 
 
     enterFuncCall(ctx) {
+        currentFunctionCall = ctx.ID().getText();
          // Check if function ID already exists
          if(!functionTable.get(ctx.ID().getText())){
             throw Error(`ERROR, La función ${ctx.ID().getText()} no existe`);
@@ -111,6 +126,39 @@ class DefaultListener extends ParPlusPlusListener {
        // Generate the ERA Action
        let quad = new Quadruple('GOSUB', ctx.ID().getText(), null, functionTable.get(ctx.ID().getText()).starts );
        quadruplerHandler.listQuadruples.push(quad);
+   }
+
+   enterArguments(ctx) {
+    iCurrParamMap = functionTable.get(currentFunctionCall).params.entries();
+    iCountParam = 0;
+   }
+
+   exitArguments(ctx) {
+    iCurrParamMap = 0;
+    iCountParam = 0;
+   }
+
+    // We have an argument
+    enterRarguments(ctx) {
+        // k is an array, [0] is parameter name, [1] is parameter dir.
+        let k = iCurrParamMap.next().value
+        iCountParam++;
+
+        let argument = quadruplerHandler.PilaO.peek();
+        quadruplerHandler.PilaO.pop();
+
+        let argumentType = quadruplerHandler.PTypes.peek();
+        quadruplerHandler.PTypes.pop();
+
+        // Verify ArgumentType against current Parameter (#k) in ParameterTable.
+        if (argumentType == memoryCtr.getType(k[1])) {
+            // Generate action PARAMETER, Argument, Argument#k
+            let quad = new Quadruple('PARAMETER', argument, k[1], null);
+            quadruplerHandler.listQuadruples.push(quad);
+        }
+        else {
+            throw Error("Incompatible argument type.");
+        }
    }
 
 
@@ -150,10 +198,17 @@ class DefaultListener extends ParPlusPlusListener {
             {
                 // FLAG
                 functionTable.get(currentFunction).vars.set(ctx.ID().getText(),newDir);
+
+                // Insert params
+                functionTable.get(currentFunction).params.set(ctx.ID().getText(), newDir);
+
             }
             // List or Matrix variable
             else {
                 functionTable.get(currentFunction).vars.set(ctx.ID().getText(), newDir);
+
+                // Insert params
+                functionTable.get(currentFunction).params.set(ctx.ID().getText(), newDir);
             }
         }
 
@@ -178,10 +233,21 @@ class DefaultListener extends ParPlusPlusListener {
         {
             // FLAG
             functionTable.get(currentFunction).vars.set(ctx.ID().getText(),newDir);
+
+            // Insert local vars
+            if(currentFunction != "Global")
+            {
+                functionTable.get(currentFunction).localVars.set(ctx.ID().getText(), newDir);
+            }
         }
         // List or Matrix variable
         else {
             functionTable.get(currentFunction).vars.set(ctx.ID().getText(), newDir);
+             // Insert local vars
+            if(currentFunction != "Global")
+            {
+                functionTable.get(currentFunction).localVars.set(ctx.ID().getText(), newDir);
+            }
         }
     }
 
