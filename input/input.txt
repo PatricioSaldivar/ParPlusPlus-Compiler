@@ -1,6 +1,6 @@
 program Ejemplo; 
 var 
-int i, j, p, myLoop, uno, tres; 
+int i, j, p, myLoop; 
 int arreglo[10]; 
 float f, fl; 
 char c; 
@@ -19,7 +19,7 @@ void module dos(int a)
 }
 
 char module tres(){
-    return ('c');
+    return (c);
 }
 
 char module cuatro(char myChar){
@@ -27,7 +27,6 @@ char module cuatro(char myChar){
 }
 
 main() { 
-    cuatro('c');
     if (! 1>= 2)  then { 
         i * 5; 2+2;
     } 
@@ -41,7 +40,7 @@ main() {
         3*5;
     }
     j = j + 2;
-    uno(1);
+    cuatro(tres());
     i = j + 2;
     dos(1);
 }

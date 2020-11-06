@@ -11,6 +11,7 @@ const DefaultListener = require('./defaultListener');
 
 
 var inputFile = '';
+let ParPlusListener = new DefaultListener();
 fs.readFile('./input/input.txt', 'utf8', function(err, data) {
     if (err) {
         // throw new Error(err);
@@ -24,9 +25,10 @@ fs.readFile('./input/input.txt', 'utf8', function(err, data) {
 
     // Poner llamar la primer regla
     var tree = parser.program();
-    var ParPlusListener = new DefaultListener();
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(ParPlusListener, tree);
-})
+});
+
+
 // console.log('———————————————————————————————');
 // console.log('input data');
 // console.log(inputFile);

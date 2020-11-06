@@ -5,6 +5,7 @@ const Quadruple = require('./quadruples/quadruple');
 const quadruplerHandler = require('./quadruples/quadrupleHandler');
 const semanticCube = require('./semantics/semanticCube');
 const semanticCubeHandler = require('./semantics/semanticCubeHandler');
+var Stack = require('stackjs');
 
 const { push } = require('./semantics/semanticCube');
 const { PilaO, listQuadruples } = require('./quadruples/quadrupleHandler');
@@ -25,10 +26,9 @@ let currentFunction = "Global";
 let currentType = "";
 let forLoopIDHelper;
 //TODO make stacks
-let iCurrParamMap = 0;
-let iCountParam = 0;
-//--------------------
-let currentFunctionCall = "";
+let iCurrParamMap = new Stack();
+let iCountParam = new Stack();
+let currentFunctionCall = new Stack();
 
 
 class DefaultListener extends ParPlusPlusListener {
@@ -68,6 +68,7 @@ class DefaultListener extends ParPlusPlusListener {
                 return;
             }
             let type = !!ctx.type()? ctx.type().getText() : ctx.VOID().getText();
+            type = type.toUpperCase();
             // Enter function to funtion table
             functionTable.set(ctx.ID().getText(), {
                 type: type,
@@ -114,7 +115,7 @@ class DefaultListener extends ParPlusPlusListener {
 
 
     enterFuncCall(ctx) {
-        currentFunctionCall = ctx.ID().getText();
+        currentFunctionCall.push(ctx.ID().getText());
          // Check if function ID already exists
          if(!functionTable.get(ctx.ID().getText())){
             throw Error(`ERROR, La función ${ctx.ID().getText()} no existe`);
@@ -128,30 +129,32 @@ class DefaultListener extends ParPlusPlusListener {
        // Generate the ERA Action
        let quad = new Quadruple('GOSUB', ctx.ID().getText(), null, functionTable.get(ctx.ID().getText()).starts );
        quadruplerHandler.listQuadruples.push(quad);
+       quadruplerHandler.PilaO.push(functionTable.get("Global").vars.get(ctx.ID().getText()));
+       quadruplerHandler.PTypes.push(functionTable.get(ctx.ID().getText()).type);
+       currentFunctionCall.pop();
    }
 
    enterArguments(ctx) {
-    iCurrParamMap = functionTable.get(currentFunctionCall).params.entries();
-    iCountParam = 0;
+    iCurrParamMap.push(functionTable.get(currentFunctionCall.peek()).params.entries());
+    iCountParam.push(0);
    }
 
    exitArguments(ctx) {
-       if(iCountParam != functionTable.get(currentFunctionCall).iParams){
-           throw Error(`Error arguments, given  ${iCountParam} arguments for a function of ${functionTable.get(currentFunctionCall).iParams} parameters`);
+       if(iCountParam.peek() != functionTable.get(currentFunctionCall.peek()).iParams){
+           throw Error(`Error arguments, given  ${iCountParam.peek()} arguments for a function of ${functionTable.get(currentFunctionCall.peek()).iParams} parameters in ${currentFunctionCall.peek()}`);
        }
-        iCurrParamMap = 0;
-        iCountParam = 0;
+        iCurrParamMap.pop();
+        iCountParam.pop();
    }
 
     // We have an argument
     enterRarguments(ctx) {
 
         // k is an array, [0] is parameter name, [1] is parameter dir.
-        let k = iCurrParamMap.next().value
-        iCountParam++;
-
-        //uno( dos( 2, 5 ) )
-
+        let k = iCurrParamMap.peek().next().value;
+        let aux = iCountParam.peek();
+        iCountParam.pop();
+        iCountParam.push(aux+1);
         let argument = quadruplerHandler.PilaO.peek();
         quadruplerHandler.PilaO.pop();
 
