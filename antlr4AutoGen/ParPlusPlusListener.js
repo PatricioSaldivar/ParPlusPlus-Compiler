@@ -83,6 +83,15 @@ ParPlusPlusListener.prototype.exitFuncBlock = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParPlusPlusParser#funcEnd.
+ParPlusPlusListener.prototype.enterFuncEnd = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#funcEnd.
+ParPlusPlusListener.prototype.exitFuncEnd = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParPlusPlusParser#funcType.
 ParPlusPlusListener.prototype.enterFuncType = function(ctx) {
 };

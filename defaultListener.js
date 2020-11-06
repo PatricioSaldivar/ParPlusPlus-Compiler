@@ -5,9 +5,10 @@ const Quadruple = require('./quadruples/quadruple');
 const quadruplerHandler = require('./quadruples/quadrupleHandler');
 const semanticCube = require('./semantics/semanticCube');
 const semanticCubeHandler = require('./semantics/semanticCubeHandler');
+var Stack = require('stackjs');
 
 const { push } = require('./semantics/semanticCube');
-const { PilaO } = require('./quadruples/quadrupleHandler');
+const { PilaO, listQuadruples } = require('./quadruples/quadrupleHandler');
 
 // Use virtual memory in order to process the quadruples.
 let functionTable = new Map();
@@ -16,6 +17,7 @@ let functionTable = new Map();
 functionTable.set("Global", {
     type: "void",
     vars: new Map(),
+    localVars: new Map(),
 });
 
 let constantTable = new Map();
@@ -23,19 +25,28 @@ let constantTable = new Map();
 let currentFunction = "Global";
 let currentType = "";
 let forLoopIDHelper;
+//TODO make stacks
+let iCurrParamMap = new Stack();
+let iCountParam = new Stack();
+let currentFunctionCall = new Stack();
+
 
 class DefaultListener extends ParPlusPlusListener {
     
     enterProgram(ctx) {
         // console.log('children CTX');
         // console.log(ctx);
-        let quad = new Quadruple('GOTO', null, null, -1);
+        let quad = new Quadruple('FuGOTO', null, null, -1);
         quadruplerHandler.listQuadruples.push(quad);
         quadruplerHandler.PJumps.push(0);
     }
     exitProgram(ctx){
         console.log(functionTable);
+        console.log('———————————————————————————————————————');
         console.log(constantTable);
+        console.log('');
+        console.log('');
+        console.log('———————————————————————————————————————');
         console.log(quadruplerHandler.listQuadruples);
     }
 
@@ -53,24 +64,127 @@ class DefaultListener extends ParPlusPlusListener {
 
         // Check if function ID already exists
             if(functionTable.get(ctx.ID().getText()) != undefined){
-                console.log(`ERROR, ID ${ctx.ID().getText()} already exists`);
+                throw Error(`ERROR, ID ${ctx.ID().getText()} already exists`);
                 return;
             }
             let type = !!ctx.type()? ctx.type().getText() : ctx.VOID().getText();
+            type = type.toUpperCase();
             // Enter function to funtion table
             functionTable.set(ctx.ID().getText(), {
                 type: type,
                 vars: new Map(),
+                // NEW
+                params: new Map(),
+                localVars: new Map(),
                 starts: quadruplerHandler.listQuadruples.length,
-                params: 0,
+                iParams: 0,
+                iLocalVars: 0,
+                iTemps: 0
             });
             currentFunction = ctx.ID().getText(); 
         }
     }
+
+    // Exit function.
+    exitFuncEnd(ctx){
+        // Step 1: Todo Release the current VarTable (local).
+        /*
+        let myCurrFunc = functionTable.get(currentFunction);
+        myCurrFunc.vars = new Map();
+        functionTable.set(currentFunction, myCurrFunc);
+        */
+        
+        // Step 2: Generate an action to end the function (ENDFunc).
+        let quad = new Quadruple('ENDFUNC', null, null, null);
+        quadruplerHandler.listQuadruples.push(quad);
+        
+        // Step 3: Todo Insert into DirFunc the number of temporal vars used. **to calculate the workspace required for execution
+    }
+
+     // Return function.
+     exitReturnFunc(ctx){
+        // Step 1: Generate a return quadruple
+        // TODO BUG: Return falla cuando pones solo return 1 o return 'c'.
+        // let returnMemDir = listQuadruples[listQuadruples.length - 1].iDirThree;
+        let quad = new Quadruple('RETURN', quadruplerHandler.PilaO.peek(), null, null);
+        quadruplerHandler.listQuadruples.push(quad);
+        // Add the return memory direction.
+        // BUG: Todo: Checar cuando pones int uno; y una función que se llame uno().
+        functionTable.get("Global").vars.set(currentFunction, quadruplerHandler.PilaO.peek());
+    }
+
+
+    enterFuncCall(ctx) {
+        currentFunctionCall.push(ctx.ID().getText());
+         // Check if function ID already exists
+         if(!functionTable.get(ctx.ID().getText())){
+            throw Error(`ERROR, La función ${ctx.ID().getText()} no existe`);
+        }
+        // Generate the ERA Action
+        let quad = new Quadruple('ERA', null, null, null);
+        quadruplerHandler.listQuadruples.push(quad);
+    }
+
+    exitFuncCall(ctx) {
+       // Generate the ERA Action
+       let quad = new Quadruple('GOSUB', ctx.ID().getText(), null, functionTable.get(ctx.ID().getText()).starts );
+       quadruplerHandler.listQuadruples.push(quad);
+       quadruplerHandler.PilaO.push(functionTable.get("Global").vars.get(ctx.ID().getText()));
+       quadruplerHandler.PTypes.push(functionTable.get(ctx.ID().getText()).type);
+       currentFunctionCall.pop();
+   }
+
+   enterArguments(ctx) {
+    iCurrParamMap.push(functionTable.get(currentFunctionCall.peek()).params.entries());
+    iCountParam.push(0);
+   }
+
+   exitArguments(ctx) {
+       if(iCountParam.peek() != functionTable.get(currentFunctionCall.peek()).iParams){
+           throw Error(`Error arguments, given  ${iCountParam.peek()} arguments for a function of ${functionTable.get(currentFunctionCall.peek()).iParams} parameters in ${currentFunctionCall.peek()}`);
+       }
+        iCurrParamMap.pop();
+        iCountParam.pop();
+   }
+
+    // We have an argument
+    enterRarguments(ctx) {
+
+        // k is an array, [0] is parameter name, [1] is parameter dir.
+        let k = iCurrParamMap.peek().next().value;
+        let aux = iCountParam.peek();
+        iCountParam.pop();
+        iCountParam.push(aux+1);
+        let argument = quadruplerHandler.PilaO.peek();
+        quadruplerHandler.PilaO.pop();
+
+        let argumentType = quadruplerHandler.PTypes.peek();
+        quadruplerHandler.PTypes.pop();
+
+        // Verify ArgumentType against current Parameter (#k) in ParameterTable.
+        if (argumentType == memoryCtr.getType(k[1])) {
+            // Generate action PARAMETER, Argument, Argument#k
+            let quad = new Quadruple('PARAMETER', argument, k[1], null);
+            quadruplerHandler.listQuadruples.push(quad);
+        }
+        else {
+            throw Error("Incompatible argument type.");
+        }
+   }
+
+
+    // Ejecuta después de leer los parámetros.
     enterVarBlock(ctx){
         let value = functionTable.get(currentFunction);
-        value.params = functionTable.get(currentFunction).vars.size;
-        functionTable.set(currentFunction,value);
+        value.iParams = functionTable.get(currentFunction).vars.size;
+        functionTable.set(currentFunction, value);
+    }
+
+     // Ejecuta después de leer las variables.
+    exitVarBlock(ctx){
+        let value = functionTable.get(currentFunction);
+        value.iLocalVars = value.vars.size - value.iParams;
+        functionTable.set(currentFunction, value);
     }
 
     // Enter variable creation block
@@ -95,10 +209,17 @@ class DefaultListener extends ParPlusPlusListener {
             {
                 // FLAG
                 functionTable.get(currentFunction).vars.set(ctx.ID().getText(),newDir);
+
+                // Insert params
+                functionTable.get(currentFunction).params.set(ctx.ID().getText(), newDir);
+
             }
             // List or Matrix variable
             else {
                 functionTable.get(currentFunction).vars.set(ctx.ID().getText(), newDir);
+
+                // Insert params
+                functionTable.get(currentFunction).params.set(ctx.ID().getText(), newDir);
             }
         }
 
@@ -108,14 +229,14 @@ class DefaultListener extends ParPlusPlusListener {
     enterXvars(ctx){
         // Check if ID is duplicate
         if(functionTable.get(currentFunction).vars.get(ctx.ID().getText())){
-            console.log(`ERROR, ID ${ctx.ID().getText()} already exists`);
+           throw Error(`ERROR, ID ${ctx.ID().getText()} already exists`);
             return;            
         }
         // Check any variable direction overflow in the memory
         let newDir = memoryCtr.setDirection(currentType, currentFunction);
         if (newDir === -1)
         {
-            console.log('ERROR, Variable declaration overflow');
+            throw Error('ERROR, Variable declaration overflow');
         }
 
         // Single Variable
@@ -123,10 +244,21 @@ class DefaultListener extends ParPlusPlusListener {
         {
             // FLAG
             functionTable.get(currentFunction).vars.set(ctx.ID().getText(),newDir);
+
+            // Insert local vars
+            if(currentFunction != "Global")
+            {
+                functionTable.get(currentFunction).localVars.set(ctx.ID().getText(), newDir);
+            }
         }
         // List or Matrix variable
         else {
             functionTable.get(currentFunction).vars.set(ctx.ID().getText(), newDir);
+             // Insert local vars
+            if(currentFunction != "Global")
+            {
+                functionTable.get(currentFunction).localVars.set(ctx.ID().getText(), newDir);
+            }
         }
     }
 
@@ -240,7 +372,7 @@ class DefaultListener extends ParPlusPlusListener {
             quadruplerHandler.PTypes.pop();
             result_type = semanticCubeHandler.getType("=", result_type, left_type);
             if(result_type === "ERROR"){
-                console.log("Assignation Error");
+                throw Error("Assignation Error");
             }else{
             let quad = new Quadruple("=",left_operand,null, result, false, false, false);
             quadruplerHandler.listQuadruples.push(quad);
@@ -261,7 +393,7 @@ class DefaultListener extends ParPlusPlusListener {
                     quadruplerHandler.PilaO.pop();
                     quadruplerHandler.PilaO.push(myNum);
                 }else{
-                    console.log("ERROR, a constant that is not a number can't be negative");
+                    throw Error("ERROR, a constant that is not a number can't be negative");
                 } 
             
             }
@@ -349,7 +481,7 @@ class DefaultListener extends ParPlusPlusListener {
 
                 }else{
                     // TODO: Stop execution when there is an error.
-                    console.log("ERROR, variable with ID: " + ctx.ID().getText() + " not found" );
+                    throw Error("ERROR, variable with ID: " + ctx.ID().getText() + " not found" );
                 }
             }
         }
@@ -555,7 +687,7 @@ class DefaultListener extends ParPlusPlusListener {
         quadruplerHandler.PTypes.pop();
         if(operator === "!"){
             if(right_type === "STRING" || right_type === "CHAR" ){
-                console.log("ERROR, cant do ! to a CHAR or a STRING");
+                throw Error("ERROR, cant do ! to a CHAR or a STRING");
             }else{
                 let result = memoryCtr.getTemporalMemorySlot();
                 let quad = new Quadruple(operator, right_operand, null, result, false, false, false);
@@ -572,7 +704,7 @@ class DefaultListener extends ParPlusPlusListener {
             let result_type = semanticCubeHandler.getType(operator, left_type, right_type);
             
             if(result_type === "ERROR"){
-                console.log("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
+                throw Error("ERROR, cant do: " + left_operand + " " + operator + " " + right_operand);
             }
             else
             {

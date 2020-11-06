@@ -6,8 +6,8 @@ float f, fl;
 char c; 
 int matriz[3][8]; 
 
-int module uno(int a) 
-var int x, y, z;
+int module uno(int a, int b) 
+var int x, y, z; float fFloat;
 {
     x = a+y*z;
     return (x);
@@ -19,7 +19,11 @@ void module dos(int a)
 }
 
 char module tres(){
-    return ('c');
+    return (c);
+}
+
+char module cuatro(char myChar){
+    return (myChar);
 }
 
 main() { 
@@ -35,5 +39,8 @@ main() {
         1+2;
         3*5;
     }
-    dos(uno(1));
+    j = j + 2;
+    cuatro(tres());
+    i = j + 2;
+    dos(1);
 }
