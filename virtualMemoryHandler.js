@@ -138,16 +138,6 @@ memoryCtr.setDirection = function(type, currentScope){
             memoryCtr.addLocalIntMemorySlot();
             return dir;
         }
-        // Bug Fix: Added Float memory management.
-        if(currentScope === "Global"){
-            dir = memoryCtr.iGlobalFloatCount;
-            memoryCtr.addGlobalFloatMemorySlot();
-            return dir;
-        }else{
-            dir = memoryCtr.iLocalFloatCount;
-            memoryCtr.addLocalFloatMemorySlot();
-            return dir;
-        }
     }else if(type === "CHAR"){
         if(currentScope === "Global"){
             dir = memoryCtr.iGlobalCharCount;
@@ -199,12 +189,18 @@ memoryCtr.freeTemporalMemorySlot = function(i) {
 }
 
 
-memoryCtr.restartTemporalMemorySlot = function(i) {
+memoryCtr.restartTemporalMemorySlot = function() {
     iTemporalMemoryList = [];
     for (var i = memoryCtr.temporalMemoryStartDir; i <= memoryCtr.temporalMemoryEndDir ; i++) {
         iTemporalMemoryList.push(i);
         // console.log("Memory restarted");
     }
+}
+
+memoryCtr.restartLocalMemory = function(){
+    memoryCtr.iLocalIntCount = localIntStartDir;      
+    memoryCtr.iLocalFloatCount = localFloatStartDir;    
+    memoryCtr.iLocalCharCount = localCharStartDir;
 }
 
 // Regresar un número en nuestro rango de la temp memory.

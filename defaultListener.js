@@ -85,6 +85,9 @@ class DefaultListener extends ParPlusPlusListener {
                 iTemps: 0
             });
             currentFunction = ctx.ID().getText(); 
+            if(type != 'VOID'){
+            functionTable.get("Global").vars.set(currentFunction,memoryCtr.setDirection(type, "Global"));
+            }
         }
     }
 
@@ -103,6 +106,7 @@ class DefaultListener extends ParPlusPlusListener {
         myFunc.iTemps = maxTemps;
         functionTable.set(currentFunction, myFunc);
         quadruplerHandler.listQuadruples.push(quad);
+        memoryCtr.restartLocalMemory();
         
         // Step 3: Todo Insert into DirFunc the number of temporal vars used. **to calculate the workspace required for execution
     }
@@ -116,7 +120,6 @@ class DefaultListener extends ParPlusPlusListener {
         quadruplerHandler.listQuadruples.push(quad);
         // Add the return memory direction.
         // BUG: Todo: Checar cuando pones int uno; y una función que se llame uno().
-        functionTable.get("Global").vars.set(currentFunction, quadruplerHandler.PilaO.peek());
     }
 
 
