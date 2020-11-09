@@ -29,6 +29,8 @@ let forLoopIDHelper;
 let iCurrParamMap = new Stack();
 let iCountParam = new Stack();
 let currentFunctionCall = new Stack();
+let currentTemps = 0;
+let maxTemps = 0;
 
 
 class DefaultListener extends ParPlusPlusListener {
@@ -61,9 +63,10 @@ class DefaultListener extends ParPlusPlusListener {
     enterFuncBlock(ctx){
         // Verify that function block is not empty
         if(ctx.children) {
-
+            currentTemps = 0;
+            maxTemps = 0;
         // Check if function ID already exists
-            if(functionTable.get(ctx.ID().getText()) != undefined){
+            if(functionTable.has(ctx.ID().getText()) || functionTable.get("Global").vars.has(ctx.ID().getText())){
                 throw Error(`ERROR, ID ${ctx.ID().getText()} already exists`);
                 return;
             }
@@ -96,6 +99,9 @@ class DefaultListener extends ParPlusPlusListener {
         
         // Step 2: Generate an action to end the function (ENDFunc).
         let quad = new Quadruple('ENDFUNC', null, null, null);
+        let myFunc = functionTable.get(currentFunction);
+        myFunc.iTemps = maxTemps;
+        functionTable.set(currentFunction, myFunc);
         quadruplerHandler.listQuadruples.push(quad);
         
         // Step 3: Todo Insert into DirFunc the number of temporal vars used. **to calculate the workspace required for execution
@@ -121,7 +127,7 @@ class DefaultListener extends ParPlusPlusListener {
             throw Error(`ERROR, La función ${ctx.ID().getText()} no existe`);
         }
         // Generate the ERA Action
-        let quad = new Quadruple('ERA', null, null, null);
+        let quad = new Quadruple('ERA', ctx.ID().getText(), null, null);
         quadruplerHandler.listQuadruples.push(quad);
     }
 
@@ -490,6 +496,7 @@ class DefaultListener extends ParPlusPlusListener {
     exitSemicolon(ctx) {
         // Restarts Quadruple Stacks and Temporal Memory.
         memoryCtr.restartTemporalMemorySlot();
+        currentTemps = 0;
 
         while(quadruplerHandler.PilaO.size() > 0)
         {
@@ -690,6 +697,8 @@ class DefaultListener extends ParPlusPlusListener {
                 throw Error("ERROR, cant do ! to a CHAR or a STRING");
             }else{
                 let result = memoryCtr.getTemporalMemorySlot();
+                currentTemps++;
+                maxTemps = Math.max(maxTemps, currentTemps);
                 let quad = new Quadruple(operator, right_operand, null, result, false, false, false);
                 quadruplerHandler.listQuadruples.push(quad);
                 quadruplerHandler.PilaO.push(result);
@@ -710,7 +719,8 @@ class DefaultListener extends ParPlusPlusListener {
             {
                 // Result is equal to a tempral 
                 let result = memoryCtr.getTemporalMemorySlot();
-    
+                currentTemps++;
+                maxTemps = Math.max(maxTemps, currentTemps);
                 let quad = new Quadruple(operator, left_operand, right_operand, result, false, false, false);
                 quadruplerHandler.listQuadruples.push(quad);
                 quadruplerHandler.PilaO.push(result);
@@ -719,6 +729,7 @@ class DefaultListener extends ParPlusPlusListener {
                                     
                 if(left_operand >= memoryCtr.temporalMemoryStartDir && left_operand <= memoryCtr.temporalMemoryEndDir){
                     //Free left_operand memory
+                    currentTemps--;
                     memoryCtr.freeTemporalMemorySlot(left_operand);
                 }
             }
@@ -726,6 +737,7 @@ class DefaultListener extends ParPlusPlusListener {
         
         if(right_operand >= memoryCtr.temporalMemoryStartDir && right_operand <= memoryCtr.temporalMemoryEndDir){
             //Free left_operand memory
+            currentTemps--;
             memoryCtr.freeTemporalMemorySlot(right_operand);
         }
     }
