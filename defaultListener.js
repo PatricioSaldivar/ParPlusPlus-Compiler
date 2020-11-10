@@ -10,6 +10,11 @@ var Stack = require('stackjs');
 const { push } = require('./semantics/semanticCube');
 const { PilaO, listQuadruples } = require('./quadruples/quadrupleHandler');
 
+// FOR EXECUTION
+const ExecutionHandler = require('./execution');
+
+
+
 // Use virtual memory in order to process the quadruples.
 let functionTable = new Map();
 
@@ -18,6 +23,12 @@ functionTable.set("Global", {
     type: "void",
     vars: new Map(),
     localVars: new Map(),
+    // NEW
+    params: new Map(),
+    temps: new Map(),
+    iParams: 0,
+    iLocalVars: 0,
+    iTemps: 0
 });
 
 let constantTable = new Map();
@@ -33,6 +44,8 @@ let currentTemps = 0;
 let maxTemps = 0;
 
 
+
+
 class DefaultListener extends ParPlusPlusListener {
     
     enterProgram(ctx) {
@@ -43,6 +56,7 @@ class DefaultListener extends ParPlusPlusListener {
         quadruplerHandler.PJumps.push(0);
     }
     exitProgram(ctx){
+        /*
         console.log(functionTable);
         console.log('———————————————————————————————————————');
         console.log(constantTable);
@@ -50,9 +64,12 @@ class DefaultListener extends ParPlusPlusListener {
         console.log('');
         console.log('———————————————————————————————————————');
         console.log(quadruplerHandler.listQuadruples);
+        */
+
     }
 
     enterMain(ctx){
+        currentFunction = "Global";
         let startMain = quadruplerHandler.PJumps.peek();
         quadruplerHandler.PJumps.pop();
         let lastQuad = quadruplerHandler.listQuadruples.length;
@@ -77,9 +94,10 @@ class DefaultListener extends ParPlusPlusListener {
                 type: type,
                 vars: new Map(),
                 // NEW
-                params: new Map(),
+                params: new Map(), 
                 localVars: new Map(),
                 starts: quadruplerHandler.listQuadruples.length,
+                temps: new Map(),
                 iParams: 0,
                 iLocalVars: 0,
                 iTemps: 0
@@ -701,6 +719,8 @@ class DefaultListener extends ParPlusPlusListener {
             }else{
                 let result = memoryCtr.getTemporalMemorySlot();
                 currentTemps++;
+                functionTable.get(currentFunction).temps.set(result,0);
+                
                 maxTemps = Math.max(maxTemps, currentTemps);
                 let quad = new Quadruple(operator, right_operand, null, result, false, false, false);
                 quadruplerHandler.listQuadruples.push(quad);
@@ -723,6 +743,11 @@ class DefaultListener extends ParPlusPlusListener {
                 // Result is equal to a tempral 
                 let result = memoryCtr.getTemporalMemorySlot();
                 currentTemps++;
+                if(result_type === "CHAR" || result_type === "STRING"){
+                    functionTable.get(currentFunction).temps.set(result,"");
+                }else{
+                    functionTable.get(currentFunction).temps.set(result,0);
+                }
                 maxTemps = Math.max(maxTemps, currentTemps);
                 let quad = new Quadruple(operator, left_operand, right_operand, result, false, false, false);
                 quadruplerHandler.listQuadruples.push(quad);
@@ -745,4 +770,9 @@ class DefaultListener extends ParPlusPlusListener {
         }
     }
 }
-module.exports = DefaultListener;
+module.exports.DefaultListener = DefaultListener;
+module.exports.functionTable = functionTable;
+module.exports.constantTable = constantTable;
+module.exports.listQuadruples = quadruplerHandler.listQuadruples;
+
+

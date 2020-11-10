@@ -8,10 +8,11 @@ const fs = require('fs');
 // Usar llaves porque se usa exports y no module.exports
 const DefaultListener = require('./defaultListener');
 
-
+const Execution = require('./execution');
 
 var inputFile = '';
-let ParPlusListener = new DefaultListener();
+let ParPlusListener = new DefaultListener.DefaultListener();
+
 fs.readFile('./input/input.txt', 'utf8', function(err, data) {
     if (err) {
         // throw new Error(err);
@@ -26,9 +27,9 @@ fs.readFile('./input/input.txt', 'utf8', function(err, data) {
     // Poner llamar la primer regla
     var tree = parser.program();
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(ParPlusListener, tree);
+
+    // START Program Execution
+    Execution.startExecution(DefaultListener.functionTable, DefaultListener.constantTable, DefaultListener.listQuadruples);
 });
 
 
-// console.log('———————————————————————————————');
-// console.log('input data');
-// console.log(inputFile);
