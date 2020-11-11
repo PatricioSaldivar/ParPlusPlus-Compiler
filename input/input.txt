@@ -9,13 +9,15 @@ int matriz[3][8];
 int module uno(int a, int b) 
 var int x, y, z; float fFloat;
 {
-    x = a+y*z;
+    x = 2;
+    x = z + 1;
     return (x);
 }
 
 void module dos(int a)
+var char c;
 {
-    a = 1;
+    a = i;
 }
 
 char module tres(){
@@ -49,4 +51,5 @@ main() {
     j = j + 1.5;
     f = 10.0;
     f = f + 2.5;
+    uno(1,2);
 }

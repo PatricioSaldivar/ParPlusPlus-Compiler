@@ -11,14 +11,14 @@ Entregas: <br />
 :white_check_mark: 7.- Creacion de codigo intermedio para expresiones (cuadroplos). <br />
 :white_check_mark: 8.- Creacion de codigo intermedio para loops y ifs. <br />
 :white_check_mark: 9.- Crear llamadas a funciones. <br />
-:white_large_square: 10.- Crear estructura de datos para manejar memoria local. <br />
+:white_check_mark: 10.- Crear estructura de datos para manejar memoria local. <br />
 :white_check_mark: 11.- Optimizar codigo para liberacion de memoria y repeticiones de funciones. <br />
 :white_check_mark: 12.- Manejo de cuádruplos para funciones (falta manejar return de endfunc y ver lo de ERA) <br />
 :white_check_mark: 13.- Ejecución: Creación del archivo execution.js que sirve para iniciar la ejecución después de la fase de compilación. <br />
 :white_check_mark: 14.- Ejecución: Inicio del proceso de ejecución inicializando la memoria global  <br />
 :white_check_mark: 15.- Ejecución: Procesar la lista de cuádruplos iterando sobre cada uno para realizar la funcionalidad requerida (manejo de operadores) <br />
 :white_check_mark: 16.- Ejecución: Manejo correcto de tipos de datos en ejecución <br />
-:white_large_square: 17.- Ejecución: Manejo correcto de los cuádruplos de funciones (ERA, PARAMETER, RETURN) y utilizar el stack. <br />
+:white_check_mark: 17.- Ejecución: Manejo correcto de los cuádruplos de funciones (ERA, PARAMETER, RETURN) y utilizar el stack. <br />
 :white_large_square: 18.- Manejo de arreglos tanto en código y en ejecución. <br />
 
 Optional TODO List: <br />

@@ -134,7 +134,7 @@ class DefaultListener extends ParPlusPlusListener {
         // Step 1: Generate a return quadruple
         // TODO BUG: Return falla cuando pones solo return 1 o return 'c'.
         // let returnMemDir = listQuadruples[listQuadruples.length - 1].iDirThree;
-        let quad = new Quadruple('RETURN', quadruplerHandler.PilaO.peek(), null, null);
+        let quad = new Quadruple('RETURN', quadruplerHandler.PilaO.peek(), null, functionTable.get('Global').vars.get(currentFunction));
         quadruplerHandler.listQuadruples.push(quad);
         // Add the return memory direction.
         // BUG: Todo: Checar cuando pones int uno; y una función que se llame uno().
@@ -191,7 +191,7 @@ class DefaultListener extends ParPlusPlusListener {
         // Verify ArgumentType against current Parameter (#k) in ParameterTable.
         if (argumentType == memoryCtr.getType(k[1])) {
             // Generate action PARAMETER, Argument, Argument#k
-            let quad = new Quadruple('PARAMETER', argument, k[1], null);
+            let quad = new Quadruple('PARAMETER', argument,null, k[1]);
             quadruplerHandler.listQuadruples.push(quad);
         }
         else {
