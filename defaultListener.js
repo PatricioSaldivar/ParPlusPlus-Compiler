@@ -51,7 +51,7 @@ class DefaultListener extends ParPlusPlusListener {
     enterProgram(ctx) {
         // console.log('children CTX');
         // console.log(ctx);
-        let quad = new Quadruple('FuGOTO', null, null, -1);
+        let quad = new Quadruple('GOTO', null, null, -1);
         quadruplerHandler.listQuadruples.push(quad);
         quadruplerHandler.PJumps.push(0);
     }
@@ -401,7 +401,7 @@ class DefaultListener extends ParPlusPlusListener {
             if(result_type === "ERROR"){
                 throw Error("Assignation Error");
             }else{
-            let quad = new Quadruple("=",left_operand,null, result, false, false, false);
+            let quad = new Quadruple("=",left_operand,null, result);
             quadruplerHandler.listQuadruples.push(quad);
             }
         }
@@ -722,7 +722,7 @@ class DefaultListener extends ParPlusPlusListener {
                 functionTable.get(currentFunction).temps.set(result,0);
                 
                 maxTemps = Math.max(maxTemps, currentTemps);
-                let quad = new Quadruple(operator, right_operand, null, result, false, false, false);
+                let quad = new Quadruple(operator, right_operand, null, result);
                 quadruplerHandler.listQuadruples.push(quad);
                 quadruplerHandler.PilaO.push(result);
                 let result_type = semanticCubeHandler.getType(operator, right_type, right_type);
@@ -749,7 +749,7 @@ class DefaultListener extends ParPlusPlusListener {
                     functionTable.get(currentFunction).temps.set(result,0);
                 }
                 maxTemps = Math.max(maxTemps, currentTemps);
-                let quad = new Quadruple(operator, left_operand, right_operand, result, false, false, false);
+                let quad = new Quadruple(operator, left_operand, right_operand, result);
                 quadruplerHandler.listQuadruples.push(quad);
                 quadruplerHandler.PilaO.push(result);
                 quadruplerHandler.PTypes.push(result_type);
