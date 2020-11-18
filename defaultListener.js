@@ -230,7 +230,7 @@ class DefaultListener extends ParPlusPlusListener {
             let newDir = memoryCtr.setDirection(currentType, currentFunction);
             if (newDir === -1)
             {
-                console.log('ERROR, Variable declaration overflow');
+                throw Error('ERROR, Variable declaration overflow');
             }
             // Single Variable
             else if (ctx.varDimensionsInit() == undefined)
@@ -444,6 +444,7 @@ class DefaultListener extends ParPlusPlusListener {
                 currentVar = functionTable.get("Global").vars.get(ctx.ID().getText());
 
             }else{
+
                 // TODO: Stop execution when there is an error.
                 throw Error("ERROR, variable with ID: " + ctx.ID().getText() + " not found" );
             }
@@ -752,7 +753,7 @@ class DefaultListener extends ParPlusPlusListener {
         quadruplerHandler.PTypes.pop();
         
         if(exp_type === 'CHAR' || exp_type === 'STRING') {
-            throw new Error('Type Mismatched: Expected a Boolean Expression on IF.');
+            throw new Error('Type Mismatched: Expected a Boolean Expression on While.');
         }
         else {
         result = quadruplerHandler.PilaO.peek();

@@ -420,10 +420,10 @@ executionCtr.processQuadruple = function(quadruple) {
         currentQuadrupleIndex = quadruple.iDirThree - 1;
         this.nextProcess();
     }
+
     else if (quadruple.operator == 'VERIFY'){
         executionCtr.verify(quadruple);
         this.nextProcess();
-
     }else if (quadruple.operator == 'WRITE'){
         if(quadruple.iDirOne.start){
             let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne.sum ))? localMemory.peek().get(quadruple.iDirOne.sum ) : executionCtr.globalMap.get(quadruple.iDirOne.sum );
@@ -437,6 +437,8 @@ executionCtr.processQuadruple = function(quadruple) {
         console.log(output);
         output = '';
         this.nextProcess();
+    }else {
+        throw new Error('Error: No se encontró el operador del quádruplo.')
     }
 }
 
