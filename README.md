@@ -13,13 +13,19 @@ Entregas: <br />
 :white_check_mark: 9.- Crear llamadas a funciones. <br />
 :white_check_mark: 10.- Crear estructura de datos para manejar memoria local. <br />
 :white_check_mark: 11.- Optimizar codigo para liberacion de memoria y repeticiones de funciones. <br />
-:white_check_mark: 12.- Manejo de cuádruplos para funciones (falta manejar return de endfunc y ver lo de ERA) <br />
+:white_check_mark: 12.- Manejo de cuádruplos para funciones (falta manejar return de endfunc y ver lo de ERA). <br />
 :white_check_mark: 13.- Ejecución: Creación del archivo execution.js que sirve para iniciar la ejecución después de la fase de compilación. <br />
-:white_check_mark: 14.- Ejecución: Inicio del proceso de ejecución inicializando la memoria global  <br />
-:white_check_mark: 15.- Ejecución: Procesar la lista de cuádruplos iterando sobre cada uno para realizar la funcionalidad requerida (manejo de operadores) <br />
-:white_check_mark: 16.- Ejecución: Manejo correcto de tipos de datos en ejecución <br />
+:white_check_mark: 14.- Ejecución: Inicio del proceso de ejecución inicializando la memoria global.  <br />
+:white_check_mark: 15.- Ejecución: Procesar la lista de cuádruplos iterando sobre cada uno para realizar la funcionalidad requerida (manejo de operadores). <br />
+:white_check_mark: 16.- Ejecución: Manejo correcto de tipos de datos en ejecución. <br />
 :white_check_mark: 17.- Ejecución: Manejo correcto de los cuádruplos de funciones (ERA, PARAMETER, RETURN) y utilizar el stack. <br />
 :white_large_square: 18.- Manejo de arreglos tanto en código y en ejecución. <br />
+:white_large_square: 19.- Documentación técnica del proyecto. <br />
+:white_large_square: 20.- Documentación del manual de usuario. <br />
+:white_large_square: 21.- Creación de la aplicación en React Native. <br />
+:white_large_square: 22.- Integración del compilador en la aplicación móvil. <br />
+
+
 
 Optional TODO List: <br />
 :white_large_square: Optimizar el reset de temporales <br />

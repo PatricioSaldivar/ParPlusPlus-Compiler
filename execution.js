@@ -382,6 +382,9 @@ executionCtr.processQuadruple = function(quadruple) {
         currentQuadrupleIndex = quadruple.iDirThree - 1;
         this.nextProcess();
     }
+    else {
+        throw new Error('Error: No se encontró el operador del quádruplo.')
+    }
 
 }
 

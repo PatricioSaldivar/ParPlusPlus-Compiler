@@ -229,7 +229,7 @@ class DefaultListener extends ParPlusPlusListener {
             let newDir = memoryCtr.setDirection(currentType, currentFunction);
             if (newDir === -1)
             {
-                console.log('ERROR, Variable declaration overflow');
+                throw Error('ERROR, Variable declaration overflow');
             }
             // Single Variable
             else if (ctx.varDimensionsInit != undefined)
@@ -387,11 +387,11 @@ class DefaultListener extends ParPlusPlusListener {
                 result_type = memoryCtr.getType(result);
 
             }else{
-                console.log('HERE');
-                console.log("ERROR, variable with ID: " + ctx.ID().getText() + " not found" );
-                console.log(functionTable.get("Global").vars);
-                console.log("-----------------");
-                console.log(typeof functionTable.get("Global").vars.get(ctx.ID().getText()));
+                throw new Error("ERROR, variable with ID: " + ctx.ID().getText() + " not found");
+                // console.log("ERROR, variable with ID: " + ctx.ID().getText() + " not found" );
+                // console.log(functionTable.get("Global").vars);
+                // console.log("-----------------");
+                // console.log(typeof functionTable.get("Global").vars.get(ctx.ID().getText()));
             }
             let left_operand = quadruplerHandler.PilaO.peek();
             let left_type = quadruplerHandler.PTypes.peek();
@@ -594,7 +594,7 @@ class DefaultListener extends ParPlusPlusListener {
         quadruplerHandler.PTypes.pop();
         
         if(exp_type === 'CHAR' || exp_type === 'STRING') {
-            throw new Error('Type Mismatched: Expected a Boolean Expression on IF.');
+            throw new Error('Type Mismatched: Expected a Boolean Expression on While.');
         }
         else {
         result = quadruplerHandler.PilaO.peek();
