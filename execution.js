@@ -141,6 +141,12 @@ executionCtr.parseToType = function(dir){
         }else if (type == "FLOAT"){
             localMemory.peek().set(dir,parseFloat(localMemory.peek().get(dir)));
         }
+    }else if(prepareLocal  && prepareLocal.has(dir)){
+        if(type == "INT"){
+            prepareLocal.set(dir,parseInt(prepareLocal.get(dir)));
+        }else if (type == "FLOAT"){
+            prepareLocal.set(dir,parseFloat(prepareLocal.get(dir)));
+        }
     }else{
         if(type == "INT"){
             executionCtr.globalMap.set(dir,parseInt(executionCtr.globalMap.get(dir)));
@@ -273,9 +279,7 @@ executionCtr.initParam = function(quadruple, operator) {
     if(quadruple.iDirThree.start){
         let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirThree.sum ))? localMemory.peek().get(quadruple.iDirThree.sum ) : executionCtr.globalMap.get(quadruple.iDirThree.sum );
         quadruple.iDirThree = quadruple.iDirThree.start + value;
-    }
-    // If we are not processing a function we are on the global scope
-        
+    }        
                 prepareLocal.set(quadruple.iDirThree , 
                     operator(
                         (
@@ -283,7 +287,7 @@ executionCtr.initParam = function(quadruple, operator) {
                         )
                     )
                 );
-    this.parseToType(quadruple.iDirThree);
+                this.parseToType(quadruple.iDirThree);
 
 }
 
@@ -393,6 +397,7 @@ executionCtr.processQuadruple = function(quadruple) {
     else if (quadruple.operator == 'RETURN') 
     {
         // console.log('Enter Return' );
+        //console.log(localMemory);
         executionCtr.operationOneOperand(quadruple , function(a) { return a; });
         this.nextProcess();
     }
@@ -406,6 +411,7 @@ executionCtr.processQuadruple = function(quadruple) {
     {
         // console.log('Enter Go Sub' );
         localMemory.push(prepareLocal);
+        prepareLocal = null;
         jumps.push(currentQuadrupleIndex);
         currentQuadrupleIndex = quadruple.iDirThree - 1;
         this.nextProcess();

@@ -7,11 +7,14 @@ char c;
 int matriz[3][5]; 
 
 int module uno(int a, int b) 
-var int x, y, z; float fFloat;
+var int x, y, z[5][2]; float fFloat;
 {
     if(a > b) then {
        x = a + uno(a-1,b);
     }
+    z[0][0] = 1;
+    z[0][1] = 2;
+    z[1][0] = 3;
     return (x);
 }
 
@@ -31,7 +34,7 @@ char module cuatro(char myChar){
 
 main() { 
     matriz[2][4] = uno(5,0);
-
+    matriz[uno(1,0) * 2][3*3/3-3] = 7;
     write(matriz[2][4]);
 }
 
