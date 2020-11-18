@@ -29,6 +29,9 @@ fs.readFile('./input/input.txt', 'utf8', function(err, data) {
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(ParPlusListener, tree);
 
     // START Program Execution
+    //console.log(DefaultListener.listQuadruples);
+    //console.log(DefaultListener.functionTable);
+    //console.log(DefaultListener.constantTable);
     Execution.startExecution(DefaultListener.functionTable, DefaultListener.constantTable, DefaultListener.listQuadruples);
 });
 

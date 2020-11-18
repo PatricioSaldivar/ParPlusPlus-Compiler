@@ -10,7 +10,7 @@ int module uno(int a, int b)
 var int x, y, z; float fFloat;
 {
     if(a > b) then {
-      x = a + uno(a-1,b);
+       x = a + uno(a-1,b);
     }
     return (x);
 }
@@ -30,30 +30,9 @@ char module cuatro(char myChar){
 }
 
 main() { 
-    if (! 1>= 2)  then { 
-        i * 5; 
-        2+2;
-    } 
-    while (myLoop > 5) do { 
-        myLoop = myLoop + 1;
-    }
-    i = 1;
-    j = 1+2+3;
-    for i = 1 to 2*j do {
-        1+2;
-        3*5;
-    }
-    c = 'a';
-    j = j - 2;
-    j = j * 2;
-    j = j / 11;
-    j = 2;
-    j = j + 1.5;
-    f = 10.0;
-    f = f + 2.5;
-    matriz[2][4] = uno(3,2);
-    matriz[2][0] = 2;
-    matriz[0][1] = 2;
-    matriz[1][0] = 1;
+    matriz[2][4] = uno(5,0);
+
     write(matriz[2][4]);
 }
+
+

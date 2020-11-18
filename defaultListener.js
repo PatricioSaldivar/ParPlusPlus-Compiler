@@ -43,6 +43,7 @@ let currentFunctionCall = new Stack();
 let currentTemps = 0;
 let maxTemps = 0;
 let currentVar;
+let inArguments = false;
 
 
 
@@ -143,6 +144,7 @@ class DefaultListener extends ParPlusPlusListener {
 
 
     enterFuncCall(ctx) {
+        quadruplerHandler.POper.push("Args");
         currentFunctionCall.push(ctx.ID().getText());
          // Check if function ID already exists
          if(!functionTable.get(ctx.ID().getText())){
@@ -160,14 +162,17 @@ class DefaultListener extends ParPlusPlusListener {
        quadruplerHandler.PilaO.push(functionTable.get("Global").vars.get(ctx.ID().getText()));
        quadruplerHandler.PTypes.push(functionTable.get(ctx.ID().getText()).type);
        currentFunctionCall.pop();
+       quadruplerHandler.POper.pop();
    }
 
    enterArguments(ctx) {
+       inArguments = true;
     iCurrParamMap.push(functionTable.get(currentFunctionCall.peek()).params.entries());
     iCountParam.push(0);
    }
 
    exitArguments(ctx) {
+    inArguments = false;
        if(iCountParam.peek() != functionTable.get(currentFunctionCall.peek()).iParams){
            throw Error(`Error arguments, given  ${iCountParam.peek()} arguments for a function of ${functionTable.get(currentFunctionCall.peek()).iParams} parameters in ${currentFunctionCall.peek()}`);
        }

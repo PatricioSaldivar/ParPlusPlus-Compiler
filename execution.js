@@ -19,6 +19,7 @@ let globalListQuadruples;
 var localMemory = new Stack();
 var jumps = new Stack();
 var output = "";
+var prepareLocal;
 
 executionCtr.startExecution = function(functionTable, constantTable, listQuadruples) {
     globalListQuadruples = listQuadruples;
@@ -268,6 +269,24 @@ executionCtr.createLocalMemory = function(funcName){
     DefaultListener.functionTable
 }
 
+executionCtr.initParam = function(quadruple, operator) {
+    if(quadruple.iDirThree.start){
+        let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirThree.sum ))? localMemory.peek().get(quadruple.iDirThree.sum ) : executionCtr.globalMap.get(quadruple.iDirThree.sum );
+        quadruple.iDirThree = quadruple.iDirThree.start + value;
+    }
+    // If we are not processing a function we are on the global scope
+        
+                prepareLocal.set(quadruple.iDirThree , 
+                    operator(
+                        (
+                            (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne)) ? localMemory.peek().get(quadruple.iDirOne) : executionCtr.globalMap.get(quadruple.iDirOne)
+                        )
+                    )
+                );
+    this.parseToType(quadruple.iDirThree);
+
+}
+
 // Procesar los cuádruplos
 executionCtr.processQuadruple = function(quadruple) {
     // OPERATOR +
@@ -368,6 +387,7 @@ executionCtr.processQuadruple = function(quadruple) {
         // console.log('Enter End Function' );
         localMemory.pop();
         currentQuadrupleIndex = jumps.peek()
+        jumps.pop();
         this.nextProcess();
     }
     else if (quadruple.operator == 'RETURN') 
@@ -378,21 +398,25 @@ executionCtr.processQuadruple = function(quadruple) {
     }
     else if (quadruple.operator == 'ERA') 
     {
-        localMemory.push(new Map(executionCtr.localFunctionMap.get(quadruple.iDirOne)));
+        prepareLocal = new Map(executionCtr.localFunctionMap.get(quadruple.iDirOne));
         // console.log('Enter Era' );
         this.nextProcess();
     }
     else if (quadruple.operator == 'GOSUB') 
     {
         // console.log('Enter Go Sub' );
+        localMemory.push(prepareLocal);
         jumps.push(currentQuadrupleIndex);
         currentQuadrupleIndex = quadruple.iDirThree - 1;
         this.nextProcess();
+        
+
+        
     }
     else if (quadruple.operator == 'PARAMETER') 
     {
         // console.log('Enter Parameter' );
-        executionCtr.operationOneOperand(quadruple , function(a) { return a; });
+        executionCtr.initParam(quadruple , function(a) { return a; });
         this.nextProcess();
     }
     else if (quadruple.operator == 'GOTOF') 
