@@ -49,9 +49,11 @@ rparams // Continuation of parameters
 | ;
 
 varDimensionsInit // Define dimensions of a variable
-: LB INT RB
-| LB INT RB LB INT RB
-| ;
+: LB aint RB
+| LB aint RB LB aint RB;
+
+aint
+: INT;
 
 statues // Define 0 or more statues
 :statue statues
@@ -75,9 +77,16 @@ semicolon
 : SEMICOLON;
 
 varDimensions // Get acces to a dimension of a variable
-: LB expresion RB
-| LB expresion RB LB expresion RB
+: LB expresion RB firstDim
+| LB expresion RB firstDim LB expresion RB secondDim
 | ;
+
+firstDim
+: ;
+
+secondDim
+: ;
+
 
 asignation // Statue of assignation
 : ID varDimensions ASSIGN expresion;
@@ -95,8 +104,11 @@ write // Statue of write function
 : WRITE LP xwrite RP;
 
 xwrite // Values to use in write function
-: expresion ywrite
-| STRING ywrite;
+: text ywrite;
+
+text
+: expresion 
+| STRING;
 
 ywrite // Continuation of expresions or strings in write function
 : COMMA xwrite

@@ -163,6 +163,12 @@ memoryCtr.setDirection = function(type, currentScope){
 
 
 memoryCtr.getType = function(dir){
+
+    if(dir.start){
+        dir = dir.start;
+    }
+
+
     if(dir >= globalIntStartDir && dir < globalFloatStartDir){
         return "INT";
     }else if(dir >= globalFloatStartDir && dir < globalCharStartDir){

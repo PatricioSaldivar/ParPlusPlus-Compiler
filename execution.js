@@ -18,29 +18,31 @@ let globalListQuadruples;
 // Tener un Stack que tenga memoria local
 var localMemory = new Stack();
 var jumps = new Stack();
+var output = "";
 
 executionCtr.startExecution = function(functionTable, constantTable, listQuadruples) {
     globalListQuadruples = listQuadruples;
     this.initGlobalMemory(functionTable, constantTable);
     this.initLocalMemorys(functionTable);
     this.initQuadrupleExecution()
-/*
+ /*
     console.log('=============== list quadruples   ==================');
     console.log(globalListQuadruples);
+  
+    console.log('=============== constant table    ==================');
+    console.log(constantTable);
 
     console.log('=============== function table    ==================');
     console.log(functionTable);
 
     console.log('=============== locals table    ==================');
-    console.log(localMemory);
+    console.log(executionCtr.localFunctionMap);
 
-    console.log('=============== constant table    ==================');
-    console.log(constantTable);
-*/
 
-console.log('=============== GLOBAL TABLE  =============== ');
-console.log(executionCtr.globalMap);
-
+ 
+    console.log('=============== GLOBAL TABLE  =============== ');
+    console.log(executionCtr.globalMap);
+  */ 
 
 }
 
@@ -50,7 +52,14 @@ executionCtr.initLocalMemorys = function(functionTable){
          if(key != "Global"){
              let localValue = value.temps;
              value.vars.forEach((key,value,map) =>{
-                 localValue.set(key,this.getDefaultValue(key));
+                if(key.start){
+                    for(let i = key.start; key.dims >1 ? i< key.start + key.max1 * key.max2 :  i< key.start + key.max1 ; i++){
+                        localValue.set(i, this.getDefaultValue(i));
+                    }
+                }else{
+                    localValue.set(key,this.getDefaultValue(key));
+                }
+                 
              });
              executionCtr.localFunctionMap.set(key, localValue);
          }
@@ -66,7 +75,13 @@ executionCtr.initGlobalMemory = function(functionTable, constantTable) {
     // Key es el nombre de la variable |  Value es la dirección de memoria, 
     functionTable.get('Global').vars.forEach( (value, key, map ) => {
         // Ver qué tipo es y asignarla al globalmap
-        executionCtr.globalMap.set(value, this.getDefaultValue(value));
+        if(value.start){
+            for(let i = value.start; value.dims >1 ? i< value.start + value.max1 * value.max2 : i < value.start + value.max1 ; i++){
+                executionCtr.globalMap.set(i, this.getDefaultValue(i));
+            }
+        }else{
+            executionCtr.globalMap.set(value, this.getDefaultValue(value));
+        }
     })
 
     // Asignar las variables temporales
@@ -113,12 +128,17 @@ executionCtr.initQuadrupleExecution = function() {
 
 
 executionCtr.parseToType = function(dir){
+    if(dir.start){
+        let value = (!localMemory.isEmpty() && localMemory.peek().has(dir.sum ))? localMemory.peek().get(dir.sum ) : executionCtr.globalMap.get(dir.sum );
+        dir = dir.start + value;
+    }
+
     let type = memoryCtr.getType(dir);
     if(!localMemory.isEmpty() && localMemory.peek().has(dir)){
         if(type == "INT"){
-            localMemory.peek().set(dir,parseInt(executionCtr.globalMap.get(dir)));
+            localMemory.peek().set(dir,parseInt(localMemory.peek().get(dir)));
         }else if (type == "FLOAT"){
-            localMemory.peek().set(dir,parseFloat(executionCtr.globalMap.get(dir)));
+            localMemory.peek().set(dir,parseFloat(localMemory.peek().get(dir)));
         }
     }else{
         if(type == "INT"){
@@ -132,10 +152,14 @@ executionCtr.parseToType = function(dir){
 
 
 executionCtr.operationTwoOperands = function(quadruple,operator) {
+    if(quadruple.iDirThree.start){
+        let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirThree.sum ))? localMemory.peek().get(quadruple.iDirThree.sum ) : executionCtr.globalMap.get(quadruple.iDirThree.sum );
+        quadruple.iDirThree = quadruple.iDirThree.start + value;
+    }
     // If we are not processing a function we are on the global scope
     if(localMemory.isEmpty()){
         // Solo global
-        executionCtr.globalMap.set(quadruple.iDirThree, 
+        executionCtr.globalMap.set(quadruple.iDirThree , 
             ( 
                 operator(
                     executionCtr.globalMap.get(quadruple.iDirOne), executionCtr.globalMap.get(quadruple.iDirTwo) 
@@ -146,9 +170,9 @@ executionCtr.operationTwoOperands = function(quadruple,operator) {
     else
     {
         let local = localMemory.peek();
-        localMemory.pop()
+        localMemory.pop();
         local.has(quadruple.iDirThree) ? 
-                local.set(quadruple.iDirThree, 
+                local.set(quadruple.iDirThree , 
                     operator(
                         (
                             local.has(quadruple.iDirOne) ? local.get(quadruple.iDirOne) : executionCtr.globalMap.get(quadruple.iDirOne)
@@ -161,7 +185,7 @@ executionCtr.operationTwoOperands = function(quadruple,operator) {
                     )
                 ) 
             : 
-                executionCtr.globalMap.set(quadruple.iDirThree, 
+                executionCtr.globalMap.set(quadruple.iDirThree , 
                     operator(
                         (
                             local.has(quadruple.iDirOne) ? local.get(quadruple.iDirOne) : executionCtr.globalMap.get(quadruple.iDirOne)
@@ -180,10 +204,14 @@ executionCtr.operationTwoOperands = function(quadruple,operator) {
 }
 
 executionCtr.operationOneOperand = function(quadruple, operator) {
+    if(quadruple.iDirThree.start){
+        let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirThree.sum ))? localMemory.peek().get(quadruple.iDirThree.sum ) : executionCtr.globalMap.get(quadruple.iDirThree.sum );
+        quadruple.iDirThree = quadruple.iDirThree.start + value;
+    }
     // If we are not processing a function we are on the global scope
     if(localMemory.isEmpty()){
         // Solo global
-        executionCtr.globalMap.set(quadruple.iDirThree, 
+        executionCtr.globalMap.set(quadruple.iDirThree , 
             ( 
                 operator(
                     executionCtr.globalMap.get(quadruple.iDirOne)
@@ -194,9 +222,9 @@ executionCtr.operationOneOperand = function(quadruple, operator) {
     else
     {
         let local = localMemory.peek();
-        localMemory.pop()
+        localMemory.pop();
         local.has(quadruple.iDirThree) ? 
-                local.set(quadruple.iDirThree, 
+                local.set(quadruple.iDirThree , 
                     operator(
                         (
                             local.has(quadruple.iDirOne) ? local.get(quadruple.iDirOne) : executionCtr.globalMap.get(quadruple.iDirOne)
@@ -204,7 +232,7 @@ executionCtr.operationOneOperand = function(quadruple, operator) {
                     )
                 ) 
             : 
-                executionCtr.globalMap.set(quadruple.iDirThree, 
+                executionCtr.globalMap.set(quadruple.iDirThree , 
                     operator(
                         (
                             local.has(quadruple.iDirOne) ? local.get(quadruple.iDirOne) : executionCtr.globalMap.get(quadruple.iDirOne)
@@ -215,7 +243,17 @@ executionCtr.operationOneOperand = function(quadruple, operator) {
         //Agarramos en Local y si no esta checamos en global
     } 
     this.parseToType(quadruple.iDirThree);
+
 }
+
+executionCtr.verify = function(quadruple){
+    let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne))? localMemory.peek().get(quadruple.iDirOne) : executionCtr.globalMap.get(quadruple.iDirOne);
+    if(value < quadruple.iDirTwo || value >= quadruple.iDirThree ){
+        throw Error("Index out of range");
+    }
+}
+
+
 
 executionCtr.nextProcess = function(){
     currentQuadrupleIndex++;
@@ -362,9 +400,9 @@ executionCtr.processQuadruple = function(quadruple) {
         // console.log('Enter Go To False' );
 
         // Check if var is in the local memory first
-        if(!localMemory.isEmpty() && localMemory.peek().vars.has(quadruple.iDirOne) ){
+        if(!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne) ){
             // If the condition is false then do the GOTO.
-            if(localMemory.peek().vars.get(quadruple.iDirOne) < 1 ){
+            if(localMemory.peek().get(quadruple.iDirOne) < 1 ){
                 currentQuadrupleIndex = quadruple.iDirThree - 1;
             }
         }
@@ -382,7 +420,24 @@ executionCtr.processQuadruple = function(quadruple) {
         currentQuadrupleIndex = quadruple.iDirThree - 1;
         this.nextProcess();
     }
+    else if (quadruple.operator == 'VERIFY'){
+        executionCtr.verify(quadruple);
+        this.nextProcess();
 
+    }else if (quadruple.operator == 'WRITE'){
+        if(quadruple.iDirOne.start){
+            let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne.sum ))? localMemory.peek().get(quadruple.iDirOne.sum ) : executionCtr.globalMap.get(quadruple.iDirOne.sum );
+            quadruple.iDirOne = quadruple.iDirOne.start + value;
+        }
+        let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne ))? localMemory.peek().get(quadruple.iDirOne ) : executionCtr.globalMap.get(quadruple.iDirOne );
+        output = output + value;
+        //console.log(executionCtr.globalMap);
+        this.nextProcess();
+    } else if(quadruple.operator == 'ENDLINE'){
+        console.log(output);
+        output = '';
+        this.nextProcess();
+    }
 }
 
 

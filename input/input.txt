@@ -4,13 +4,14 @@ int i, j, p, myLoop;
 int arreglo[10]; 
 float f, fl; 
 char c; 
-int matriz[3][8]; 
+int matriz[3][5]; 
 
 int module uno(int a, int b) 
 var int x, y, z; float fFloat;
 {
-    x = 2;
-    x = z + 1;
+    if(a > b) then {
+      x = a + uno(a-1,b);
+    }
     return (x);
 }
 
@@ -43,7 +44,6 @@ main() {
         3*5;
     }
     c = 'a';
-    j = j + 2;
     j = j - 2;
     j = j * 2;
     j = j / 11;
@@ -51,5 +51,9 @@ main() {
     j = j + 1.5;
     f = 10.0;
     f = f + 2.5;
-    uno(1,2);
+    matriz[2][4] = uno(3,2);
+    matriz[2][0] = 2;
+    matriz[0][1] = 2;
+    matriz[1][0] = 1;
+    write(matriz[2][4]);
 }

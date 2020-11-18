@@ -128,6 +128,15 @@ ParPlusPlusListener.prototype.exitVarDimensionsInit = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParPlusPlusParser#aint.
+ParPlusPlusListener.prototype.enterAint = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#aint.
+ParPlusPlusListener.prototype.exitAint = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParPlusPlusParser#statues.
 ParPlusPlusListener.prototype.enterStatues = function(ctx) {
 };
@@ -170,6 +179,24 @@ ParPlusPlusListener.prototype.enterVarDimensions = function(ctx) {
 
 // Exit a parse tree produced by ParPlusPlusParser#varDimensions.
 ParPlusPlusListener.prototype.exitVarDimensions = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#firstDim.
+ParPlusPlusListener.prototype.enterFirstDim = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#firstDim.
+ParPlusPlusListener.prototype.exitFirstDim = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#secondDim.
+ParPlusPlusListener.prototype.enterSecondDim = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#secondDim.
+ParPlusPlusListener.prototype.exitSecondDim = function(ctx) {
 };
 
 
@@ -224,6 +251,15 @@ ParPlusPlusListener.prototype.enterXwrite = function(ctx) {
 
 // Exit a parse tree produced by ParPlusPlusParser#xwrite.
 ParPlusPlusListener.prototype.exitXwrite = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#text.
+ParPlusPlusListener.prototype.enterText = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#text.
+ParPlusPlusListener.prototype.exitText = function(ctx) {
 };
 
 
