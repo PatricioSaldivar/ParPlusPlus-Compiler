@@ -19,17 +19,17 @@ let globalListQuadruples;
 var localMemory = new Stack();
 var jumps = new Stack();
 var output = "";
-var prepareLocal;
+var prepareLocal = new Stack();
 
 executionCtr.startExecution = function(functionTable, constantTable, listQuadruples) {
     globalListQuadruples = listQuadruples;
     this.initGlobalMemory(functionTable, constantTable);
     this.initLocalMemorys(functionTable);
     this.initQuadrupleExecution()
- /*
+   /*
     console.log('=============== list quadruples   ==================');
     console.log(globalListQuadruples);
-  
+
     console.log('=============== constant table    ==================');
     console.log(constantTable);
 
@@ -44,7 +44,7 @@ executionCtr.startExecution = function(functionTable, constantTable, listQuadrup
     console.log('=============== GLOBAL TABLE  =============== ');
     console.log(executionCtr.globalMap);
   
-*/ 
+*/
 }
 
 executionCtr.initLocalMemorys = function(functionTable){
@@ -141,11 +141,11 @@ executionCtr.parseToType = function(dir){
         }else if (type == "FLOAT"){
             localMemory.peek().set(dir,parseFloat(localMemory.peek().get(dir)));
         }
-    }else if(prepareLocal  && prepareLocal.has(dir)){
+    }else if(!prepareLocal.isEmpty()  && prepareLocal.peek().has(dir)){
         if(type == "INT"){
-            prepareLocal.set(dir,parseInt(prepareLocal.get(dir)));
+            prepareLocal.peek().set(dir,parseInt(prepareLocal.peek().get(dir)));
         }else if (type == "FLOAT"){
-            prepareLocal.set(dir,parseFloat(prepareLocal.get(dir)));
+            prepareLocal.peek().set(dir,parseFloat(prepareLocal.peek().get(dir)));
         }
     }else{
         if(type == "INT"){
@@ -282,7 +282,7 @@ executionCtr.initParam = function(quadruple, operator) {
         let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirThree.sum ))? localMemory.peek().get(quadruple.iDirThree.sum ) : executionCtr.globalMap.get(quadruple.iDirThree.sum );
         quadruple.iDirThree = quadruple.iDirThree.start + value;
     }        
-                prepareLocal.set(quadruple.iDirThree , 
+                prepareLocal.peek().set(quadruple.iDirThree , 
                     operator(
                         (
                             (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne)) ? localMemory.peek().get(quadruple.iDirOne) : executionCtr.globalMap.get(quadruple.iDirOne)
@@ -405,15 +405,15 @@ executionCtr.processQuadruple = function(quadruple) {
     }
     else if (quadruple.operator == 'ERA') 
     {
-        prepareLocal = new Map(executionCtr.localFunctionMap.get(quadruple.iDirOne));
+        prepareLocal.push(new Map(executionCtr.localFunctionMap.get(quadruple.iDirOne)));
         // console.log('Enter Era' );
         this.nextProcess();
     }
     else if (quadruple.operator == 'GOSUB') 
     {
         // console.log('Enter Go Sub' );
-        localMemory.push(prepareLocal);
-        prepareLocal = null;
+        localMemory.push(prepareLocal.peek());
+        prepareLocal.pop();
         jumps.push(currentQuadrupleIndex);
         currentQuadrupleIndex = quadruple.iDirThree - 1;
         this.nextProcess();
