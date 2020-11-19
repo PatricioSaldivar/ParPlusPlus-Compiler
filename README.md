@@ -19,11 +19,12 @@ Entregas: <br />
 :white_check_mark: 15.- Ejecución: Procesar la lista de cuádruplos iterando sobre cada uno para realizar la funcionalidad requerida (manejo de operadores). <br />
 :white_check_mark: 16.- Ejecución: Manejo correcto de tipos de datos en ejecución. <br />
 :white_check_mark: 17.- Ejecución: Manejo correcto de los cuádruplos de funciones (ERA, PARAMETER, RETURN) y utilizar el stack. <br />
-:white_large_square: 18.- Manejo de arreglos tanto en código y en ejecución. <br />
-:white_large_square: 19.- Documentación técnica del proyecto. <br />
-:white_large_square: 20.- Documentación del manual de usuario. <br />
-:white_large_square: 21.- Creación de la aplicación en React Native. <br />
-:white_large_square: 22.- Integración del compilador en la aplicación móvil. <br />
+:white_check_mark: 18.- Manejo de arreglos tanto en código y en ejecución. <br />
+:white_large_square: 19.- Pruebas extensivas. <br />
+:white_large_square: 20.- Documentación técnica del proyecto. <br />
+:white_large_square: 21.- Documentación del manual de usuario. <br />
+:white_large_square: 22.- Creación de la aplicación en React Native. <br />
+:white_large_square: 23.- Integración del compilador en la aplicación móvil. <br />
 
 
 

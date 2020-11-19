@@ -43,8 +43,8 @@ let currentFunctionCall = new Stack();
 let currentTemps = 0;
 let maxTemps = 0;
 let currentVar;
-let inArguments = false;
-
+let gotReturnFunction = false;
+let inDecision = false;
 
 
 
@@ -123,10 +123,16 @@ class DefaultListener extends ParPlusPlusListener {
         // Step 2: Generate an action to end the function (ENDFunc).
         let quad = new Quadruple('ENDFUNC', null, null, null);
         let myFunc = functionTable.get(currentFunction);
+        if(myFunc.type != 'VOID' && !gotReturnFunction){
+            throw Error("Expected return statement");
+        }
         myFunc.iTemps = maxTemps;
         functionTable.set(currentFunction, myFunc);
-        quadruplerHandler.listQuadruples.push(quad);
+        if(quadruplerHandler.listQuadruples[quadruplerHandler.listQuadruples.length -1].operator != 'ENDFUNC'){
+            quadruplerHandler.listQuadruples.push(quad);
+        }
         memoryCtr.restartLocalMemory();
+        gotReturnFunction = false;
         
         // Step 3: Todo Insert into DirFunc the number of temporal vars used. **to calculate the workspace required for execution
     }
@@ -136,8 +142,13 @@ class DefaultListener extends ParPlusPlusListener {
         // Step 1: Generate a return quadruple
         // TODO BUG: Return falla cuando pones solo return 1 o return 'c'.
         // let returnMemDir = listQuadruples[listQuadruples.length - 1].iDirThree;
-        let quad = new Quadruple('RETURN', quadruplerHandler.PilaO.peek(), null, functionTable.get('Global').vars.get(currentFunction));
+        let quad = new Quadruple('RETURN', quadruplerHandler.PilaO.peek(), null, functionTable.get('Global').vars.has(currentFunction)? functionTable.get('Global').vars.get(currentFunction) : null );
         quadruplerHandler.listQuadruples.push(quad);
+        quad = new Quadruple('ENDFUNC', null, null, null);
+        quadruplerHandler.listQuadruples.push(quad);
+        if(!inDecision){
+        gotReturnFunction = true;
+        }
         // Add the return memory direction.
         // BUG: Todo: Checar cuando pones int uno; y una función que se llame uno().
     }
@@ -166,13 +177,11 @@ class DefaultListener extends ParPlusPlusListener {
    }
 
    enterArguments(ctx) {
-       inArguments = true;
     iCurrParamMap.push(functionTable.get(currentFunctionCall.peek()).params.entries());
     iCountParam.push(0);
    }
 
    exitArguments(ctx) {
-    inArguments = false;
        if(iCountParam.peek() != functionTable.get(currentFunctionCall.peek()).iParams){
            throw Error(`Error arguments, given  ${iCountParam.peek()} arguments for a function of ${functionTable.get(currentFunctionCall.peek()).iParams} parameters in ${currentFunctionCall.peek()}`);
        }
@@ -718,6 +727,7 @@ class DefaultListener extends ParPlusPlusListener {
             // Test the -1
           let iCount = quadruplerHandler.listQuadruples.length - 1;
           quadruplerHandler.PJumps.push(iCount)
+          inDecision = true;
         }
     }
 
@@ -732,6 +742,7 @@ class DefaultListener extends ParPlusPlusListener {
 
     enterXdecision(ctx){
         // New Code.
+        inDecision = false;
         let quad = new Quadruple('GOTO', null, null, -1);
         quadruplerHandler.listQuadruples.push(quad);
         
@@ -741,6 +752,7 @@ class DefaultListener extends ParPlusPlusListener {
         quadruplerHandler.PJumps.push(iCount); // count - 1
         quadruplerHandler.listQuadruples[ifFalse].fillDestinationDir(iCount + 1); // count 
     }
+
 
 
     // ======== WHILE LOOPS ==============
