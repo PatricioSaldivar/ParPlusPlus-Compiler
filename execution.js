@@ -8,6 +8,7 @@ const quadruplerHandler = require('./quadruples/quadrupleHandler');
 const semanticCube = require('./semantics/semanticCube');
 const semanticCubeHandler = require('./semantics/semanticCubeHandler');
 var Stack = require('stackjs');
+const prompt = require('prompt-sync')({sigint: true});
 
 const DefaultListener = require('./defaultListener');
 
@@ -262,6 +263,16 @@ executionCtr.verify = function(quadruple){
     }
 }
 
+executionCtr.parseValue = function(data,type){
+    if( type == 'INT'){
+        return parseInt(data);
+
+    }else if (type == 'FLOAT'){
+        return parseFloat(data);
+    }else{
+        return data[0];
+    }
+}
 
 
 executionCtr.nextProcess = function(){
@@ -391,15 +402,21 @@ executionCtr.processQuadruple = function(quadruple) {
     else if (quadruple.operator == 'ENDFUNC') 
     {
         // console.log('Enter End Function' );
-        localMemory.pop();
-        currentQuadrupleIndex = jumps.peek()
-        jumps.pop();
+        if(!localMemory.isEmpty()){            
+            localMemory.pop();
+            currentQuadrupleIndex = jumps.peek()
+            jumps.pop();
+        }
         this.nextProcess();
+
     }
     else if (quadruple.operator == 'RETURN') 
     {
         // console.log('Enter Return' );
         //console.log(localMemory);
+        if(quadruple.iDirThree == null && localMemory.isEmpty()){
+            console.log(executionCtr.globalMap.get(quadruple.iDirOne));
+        }
         executionCtr.operationOneOperand(quadruple , function(a) { return a; });
         this.nextProcess();
     }
@@ -468,6 +485,21 @@ executionCtr.processQuadruple = function(quadruple) {
     } else if(quadruple.operator == 'ENDLINE'){
         console.log(output);
         output = '';
+        this.nextProcess();
+    }else if (quadruple.operator == 'READ'){
+        let type = memoryCtr.getType(quadruple.iDirOne);
+        let data = prompt();
+        let result = this.parseValue(data,type);
+        if(!result){
+            result = this.getDefaultValue(quadruple.iDirOne);
+        }
+        if(quadruple.iDirOne.start){
+            let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne.sum ))? localMemory.peek().get(quadruple.iDirOne.sum ) : executionCtr.globalMap.get(quadruple.iDirOne.sum );
+            quadruple.iDirOne = quadruple.iDirOne.start + value;
+        }
+        (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne ))? localMemory.peek().set(quadruple.iDirOne,result) : executionCtr.globalMap.set(quadruple.iDirOne, result);
+
+        //console.log(executionCtr.globalMap);
         this.nextProcess();
     }else {
         throw new Error('Error: No se encontró el operador del quádruplo.')

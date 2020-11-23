@@ -99,7 +99,18 @@ returnFunc // Statue of return function
 : RETURN LP expresion RP;
 
 read // Statue of read function
-: READ LP xvars RP;
+: READ LP xread RP;
+
+xread
+: readvars yread;
+
+readvars
+: ID varDimensions;
+
+yread
+: COMMA xread
+| ;
+
 
 write // Statue of write function
 : WRITE LP xwrite RP;
@@ -289,7 +300,7 @@ DO: 'do';
 ID : ('A'..'Z' | 'a'..'z') ('A'..'Z' | 'a'..'z' | '0'..'9')*; 
 INT: ('0' .. '9') +;
 FLOAT: ('0' .. '9') + ('.' ('0' .. '9') +)?;
-STRING: '"' (~[\t\r\n] )* '"'; 
+STRING: '"' (~[\t\r\n"] )* '"'; 
 CHAR: ['] (~[\t\r\n]) ['];
 
 WHITESPACE : [ \t\r\n]+ -> skip ;

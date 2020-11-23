@@ -295,6 +295,33 @@ class DefaultListener extends ParPlusPlusListener {
             currentVar = ctx.ID().getText(); 
         }
     }
+
+    exitReadvars(ctx){
+
+        if(ctx.varDimensions().children){
+            let quad = new Quadruple('READ', quadruplerHandler.PilaO.peek(), null, null);
+            quadruplerHandler.listQuadruples.push(quad);
+            quadruplerHandler.PilaO.pop();
+            quadruplerHandler.PTypes.pop();
+        }else{
+            let result;
+            if(functionTable.get(currentFunction).vars.has(ctx.ID().getText())){
+                result = functionTable.get(currentFunction).vars.get(ctx.ID().getText());
+             }else if(functionTable.get("Global").vars.has(ctx.ID().getText())){
+                 result = functionTable.get("Global").vars.get(ctx.ID().getText());
+             }else{
+                 console.log('HERE');
+                 console.log("ERROR, variable with ID: " + ctx.ID().getText() + " not found" );
+                 console.log(functionTable.get("Global").vars);
+                 console.log("-----------------");
+                 console.log(typeof functionTable.get("Global").vars.get(ctx.ID().getText()));
+             }
+            let quad = new Quadruple('READ', result, null, null);
+            quadruplerHandler.listQuadruples.push(quad);
+        }
+
+    }
+
     exitWrite(ctx){
         let quad = new Quadruple('ENDLINE', null, null, null);
         quadruplerHandler.listQuadruples.push(quad);
