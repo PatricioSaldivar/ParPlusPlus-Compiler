@@ -542,27 +542,30 @@ class DefaultListener extends ParPlusPlusListener {
 
     enterFactor(ctx){
         // TODO Flag: function call 
-        if(ctx.cte())
-        {
-            // ctx.cte() no es undefined, por ende Si existe.
-            if(ctx.MINUS()){
-                // regresar -ctx
-                if (quadruplerHandler.PTypes.peek() == "INT" || quadruplerHandler.PTypes.top() == "FLOAT"){
-                    let myNum = quadruplerHandler.PilaO.peek();
-                    myNum *= -1;
-                    quadruplerHandler.PilaO.pop();
-                    quadruplerHandler.PilaO.push(myNum);
-                }else{
-                    throw Error("ERROR, a constant that is not a number can't be negative");
-                } 
-            
-            }
-        }else if(ctx.LP()){
+         if(ctx.LP()){
             quadruplerHandler.POper.push("(");
         }
     }
 
     exitFactor(ctx){
+            // ctx.cte() no es undefined, por ende Si existe.
+            if(ctx.MINUS()){
+                // regresar -ctx
+                if (quadruplerHandler.PTypes.peek() == "INT" || quadruplerHandler.PTypes.top() == "FLOAT"){
+                    let myNum = quadruplerHandler.PilaO.peek();
+                    if(!constantTable.has('-1')){
+                        constantTable.set('-1',memoryCtr.iConstantCount);
+                        memoryCtr.addConstantMemorySlot();
+                    }
+                    quadruplerHandler.PilaO.push(constantTable.get('-1'));
+                    quadruplerHandler.POper.push('*');
+                    quadruplerHandler.PTypes.push('INT');
+                    this.makeQuadruple();
+                }else{
+                    throw Error("ERROR, a constant that is not a number can't be negative");
+                } 
+            
+            }
         // TODO Flag: function call 
         if(ctx.LP()){
             quadruplerHandler.POper.pop();

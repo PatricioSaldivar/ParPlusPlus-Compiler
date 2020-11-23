@@ -232,7 +232,9 @@ mod
 
 factor // A factor
 : funcCall
+| MINUS funcCall
 | LP expresion RP
+| MINUS LP expresion RP
 | cte
 | MINUS cte;
 
