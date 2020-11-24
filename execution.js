@@ -22,10 +22,13 @@ var jumps = new Stack();
 var output = "";
 var prepareLocal = new Stack();
 
+// Funcion que comienza la memoria virtual y corre los cuadruplos.
 executionCtr.startExecution = function(functionTable, constantTable, listQuadruples) {
+    // Se inicializan las estructuras de datos y lista de cuadruplos.
     globalListQuadruples = listQuadruples;
     this.initGlobalMemory(functionTable, constantTable);
     this.initLocalMemorys(functionTable);
+    // Comienzan a correr los cuadruplos.
     this.initQuadrupleExecution()
   /* 
     console.log('=============== list quadruples   ==================');
@@ -123,7 +126,7 @@ executionCtr.getDefaultValue = function(memDir) {
         return '';
     }
 }
-
+// Funcion que corre todos los cuadruplos para el programa.
 executionCtr.initQuadrupleExecution = function() {
         while(currentQuadrupleIndex < globalListQuadruples.length)
         {
@@ -131,7 +134,7 @@ executionCtr.initQuadrupleExecution = function() {
         }
 }
 
-
+// Funcion que parsea un valor de una direccion al valor correspondiente.
 executionCtr.parseToType = function(dir){
     if(dir != null && dir.sum){
         let value = (!localMemory.isEmpty() && localMemory.peek().has(dir.sum ))? localMemory.peek().get(dir.sum ) : executionCtr.globalMap.get(dir.sum );
@@ -161,8 +164,10 @@ executionCtr.parseToType = function(dir){
 
 }
 
-
+// funcion que corre cuando se evalua un a operacion con dos direcciones y dan resultado a la tercera.
 executionCtr.operationTwoOperands = function(quadruple,operator) {
+    
+    // Se verifican los valores de las direcciones en dado caso de que sean dimensionadas se accesa a su memoriapara realizar las operaciones.
     let value = quadruple.iDirThree;
     let value1 = quadruple.iDirOne;
     let value2 = quadruple.iDirTwo;
@@ -179,7 +184,7 @@ executionCtr.operationTwoOperands = function(quadruple,operator) {
         value2 = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirTwo.sum ))? localMemory.peek().get(quadruple.iDirTwo.sum ) : executionCtr.globalMap.get(quadruple.iDirTwo.sum );
         value2 = quadruple.iDirTwo.start + value2;
     }
-    // If we are not processing a function we are on the global scope
+    // Verificamos el alcanze para saber si existe un alcanze global o se hara la operacion en el alcanze global.
     if(localMemory.isEmpty()){
         // Solo global
             executionCtr.globalMap.set(value , 
@@ -224,10 +229,13 @@ executionCtr.operationTwoOperands = function(quadruple,operator) {
         localMemory.push(local);
         //Agarramos en Local y si no esta checamos en global
     } 
+    // Se transfroma en valor a su tipo correspondiente.
     this.parseToType(quadruple.iDirThree);
 }
 
+// Funcion que corre cuando se evalua un a operacion una direcion y da resultado a otra.
 executionCtr.operationOneOperand = function(quadruple, operator) {
+    // Se verifican los valores de las direcciones en dado caso de que sean dimensionadas se accesa a su memoriapara realizar las operaciones.
         let value = quadruple.iDirThree;
         let value1 = quadruple.iDirOne;
         if(quadruple.iDirThree != null && quadruple.iDirThree.sum){
@@ -239,7 +247,7 @@ executionCtr.operationOneOperand = function(quadruple, operator) {
             value1 = quadruple.iDirOne.start + value1;
         }
     if(value != null){
-        // If we are not processing a function we are on the global scope
+        // Verificamos el alcanze para saber si se hara en un alcanze global o local.
         if(localMemory.isEmpty()){
             // Solo global
                 executionCtr.globalMap.set(value , 
@@ -262,7 +270,7 @@ executionCtr.operationOneOperand = function(quadruple, operator) {
                         )
                     )
                 ) 
-            : 
+            :   //Agarramos en Local y si no esta checamos en global
                 executionCtr.globalMap.set(value , 
                     operator(
                         (
@@ -272,19 +280,19 @@ executionCtr.operationOneOperand = function(quadruple, operator) {
                 );
  
             localMemory.push(local);
-            //Agarramos en Local y si no esta checamos en global
+
         } 
         this.parseToType(quadruple.iDirThree);
     }
 }
-
+// Se hace la operacion de verificacion para ver si el acceso a un arreglo o matriz es correcto
 executionCtr.verify = function(quadruple){
     let value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne))? localMemory.peek().get(quadruple.iDirOne) : executionCtr.globalMap.get(quadruple.iDirOne);
     if(value < quadruple.iDirTwo || value >= quadruple.iDirThree ){
         throw Error("Index out of range");
     }
 }
-
+// Se transforma un valor dependiendo del tipo.
 executionCtr.parseValue = function(data,type){
     if( type == 'INT'){
         return parseInt(data);
@@ -296,15 +304,12 @@ executionCtr.parseValue = function(data,type){
     }
 }
 
-
+// Funcion para avanzar al siguiente cuadruplo.
 executionCtr.nextProcess = function(){
     currentQuadrupleIndex++;  
 }
 
-executionCtr.createLocalMemory = function(funcName){
-    DefaultListener.functionTable
-}
-
+// funcion para inicialiar algun parametro de una funcion.
 executionCtr.initParam = function(quadruple, operator) {
     let value = quadruple.iDirThree;
     let value1 = quadruple.iDirOne;
@@ -333,49 +338,49 @@ executionCtr.initParam = function(quadruple, operator) {
 executionCtr.processQuadruple = function(quadruple) {
     if(quadruple.operator == '+')
     {
-        // console.log('ENTERED PLUS');
+        // Se ejecuta la operacion de suma
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a + b; })
         this.nextProcess();
     }
     else if (quadruple.operator == '-') 
     {
-        // console.log('ENTERED MINUS');
+        // Se ejecuta la operacion de resta
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a - b; });
         this.nextProcess();
     }
     else if (quadruple.operator == '*') 
     {
-        // console.log('ENTERED MULTIPLICATION');
+        // Se ejecuta la operacion de multiplicacion
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a * b; });
         this.nextProcess();
     }
     else if (quadruple.operator == '/') 
     {
-        // console.log('ENTERED DIVISION');
+        // Se ejecuta la operacion de division
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a / b; });
         this.nextProcess();
     }
     else if (quadruple.operator == '%') 
     {
-        // console.log('ENTERED MODULO');
+        // Se ejecuta la operacion de modulo
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a % b; });
         this.nextProcess();
     }
     else if (quadruple.operator == '==') 
     {
-        // console.log('ENTERED ==');
+        // Se ejecuta la operacion de igualdad
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a == b ? 1 : 0;; });
         this.nextProcess();
     }
     else if (quadruple.operator == '>=') 
     {
-        // console.log('ENTERED >=');
+        // Se ejecuta la operacion de mayor igual
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a >= b ? 1 : 0;; });
         this.nextProcess();
     }
     else if (quadruple.operator == '<=') 
     {
-        // console.log('ENTERED <=');
+        // Se ejecuta la operacion de menor igual
         
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a <= b ? 1 : 0;; });
        
@@ -383,52 +388,49 @@ executionCtr.processQuadruple = function(quadruple) {
     }
     else if (quadruple.operator == '!=') 
     {
-        // console.log('ENTERED !=');
+        // Se ejecuta la operacion de difernte
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a != b ? 1 : 0;; });
         this.nextProcess();
     }
     else if (quadruple.operator == '!') 
     {
-        // console.log('ENTERED !');
+        // Se ejecuta la operacion de negacion
         executionCtr.operationOneOperand(quadruple , function(a) { return (a < 1) ? 1 : 0; })
         this.nextProcess();
     }
     else if (quadruple.operator == '||') 
     {
-        // console.log('ENTERED OR');
+        // Se ejecuta la operacion de OR
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a || b ? 1 : 0; });
         this.nextProcess();
     }
     else if (quadruple.operator == '&&') 
     {
-        // console.log('ENTERED AND');
+        // Se ejecuta la operacion de AND
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a && b ? 1 : 0; });
         this.nextProcess();
     }
     else if (quadruple.operator == '>') 
     {
-        // console.log('ENTERED Greater Than');
+        // Se ejecuta la operacion de mayor
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a > b ? 1 : 0; });
         this.nextProcess();
     }
     else if (quadruple.operator == '<') 
     {
-        // console.log('ENTERED Less Than');
+        // Se ejecuta la operacion de menor
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a < b ? 1 : 0; });
         this.nextProcess();
     }
     else if (quadruple.operator == '=') 
     {
-        // Diferent
-        //console.log(quadruple);
+        // Se ejecuta la operacion de asignacion
         executionCtr.operationOneOperand(quadruple , function(a) { return a; })
-        // console.log("EQUAL OPERATION");
         this.nextProcess();
     }
-    // Other Quadruple Operators
     else if (quadruple.operator == 'ENDFUNC') 
     {
-        // console.log('Enter End Function' );
+        // Se ejecuta la operacion de fin de funcion
         if(!localMemory.isEmpty()){            
             localMemory.pop();
             currentQuadrupleIndex = jumps.peek()
@@ -439,19 +441,19 @@ executionCtr.processQuadruple = function(quadruple) {
     }
     else if (quadruple.operator == 'RETURN') 
     {
-        // console.log('Enter Return' );
+        // Se ejecuta la operacion de retorno
         executionCtr.operationOneOperand(quadruple , function(a) { return a; });
         this.nextProcess();
     }
     else if (quadruple.operator == 'ERA') 
     {
+        //Se ejecuta la operacion de ERA
         prepareLocal.push(new Map(executionCtr.localFunctionMap.get(quadruple.iDirOne)));
-        // console.log('Enter Era' );
         this.nextProcess();
     }
     else if (quadruple.operator == 'GOSUB') 
     {
-        // console.log('Enter Go Sub' );
+        // Se ejecuta la operacion de acceder a la subdireccion.
         localMemory.push(prepareLocal.peek());
         prepareLocal.pop();
         jumps.push(currentQuadrupleIndex);
@@ -463,22 +465,22 @@ executionCtr.processQuadruple = function(quadruple) {
     }
     else if (quadruple.operator == 'PARAMETER') 
     {
-        // console.log('Enter Parameter' );
+        // Se ejecuta la operacion de inicializar un parametro
         executionCtr.initParam(quadruple , function(a) { return a; });
         this.nextProcess();
     }
     else if (quadruple.operator == 'GOTOF') 
     {
-        // console.log('Enter Go To False' );
+        // Se ejecuta la operacion de ir a una direccion en falso.
 
-        // Check if var is in the local memory first
+        //Checamos alcnaze local
         if(!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne) ){
-            // If the condition is false then do the GOTO.
+
             if(localMemory.peek().get(quadruple.iDirOne) < 1 ){
                 currentQuadrupleIndex = quadruple.iDirThree - 1;
             }
         }
-        // Global Var.
+        // Alcanze global.
         else {
             if(executionCtr.globalMap.get(quadruple.iDirOne) < 1 ){
                 currentQuadrupleIndex = quadruple.iDirThree - 1;
@@ -488,15 +490,17 @@ executionCtr.processQuadruple = function(quadruple) {
     }
     else if (quadruple.operator == 'GOTO') 
     {
-        // console.log('Enter Go To' );
+        // Se ejecuta la operacion de ir a una direccion.
         currentQuadrupleIndex = quadruple.iDirThree - 1;
         this.nextProcess();
     }
 
     else if (quadruple.operator == 'VERIFY'){
+        //Se ejecuta la operacion de verificar
         executionCtr.verify(quadruple);
         this.nextProcess();
     }else if (quadruple.operator == 'WRITE'){
+        //Se ejecuta la operacion de esribir.
         let value = 0;
         let text;
         if(quadruple.iDirOne != null && quadruple.iDirOne.sum){
@@ -507,13 +511,14 @@ executionCtr.processQuadruple = function(quadruple) {
         }
 
         output = output + text;
-        //console.log(executionCtr.globalMap);
         this.nextProcess();
     } else if(quadruple.operator == 'ENDLINE'){
+        //Se ejecuta la operacion de impresion en la consola.
         console.log(output);
         output = '';
         this.nextProcess();
     }else if (quadruple.operator == 'READ'){
+        //Se ejecuta la operacion de leer un dato.
         let type = memoryCtr.getType(quadruple.iDirOne);
         let data = prompt();
         let result = this.parseValue(data,type);
@@ -531,8 +536,7 @@ executionCtr.processQuadruple = function(quadruple) {
         }else{
             (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne ))? localMemory.peek().set(quadruple.iDirOne,result) : executionCtr.globalMap.set(quadruple.iDirOne, result);
         }
-       
-        //console.log(executionCtr.globalMap);
+       ;
         this.nextProcess();
     }else {
         throw new Error('Error: No se encontró el operador del quádruplo.')
