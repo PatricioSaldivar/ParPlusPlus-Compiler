@@ -27,10 +27,10 @@ executionCtr.startExecution = function(functionTable, constantTable, listQuadrup
     this.initGlobalMemory(functionTable, constantTable);
     this.initLocalMemorys(functionTable);
     this.initQuadrupleExecution()
- 
+  /* 
     console.log('=============== list quadruples   ==================');
     console.log(globalListQuadruples);
- /* 
+
     console.log('=============== constant table    ==================');
     console.log(constantTable);
 
@@ -41,10 +41,10 @@ executionCtr.startExecution = function(functionTable, constantTable, listQuadrup
     console.log(executionCtr.localFunctionMap);
 
 
-   */
+  
     console.log('=============== GLOBAL TABLE  =============== ');
     console.log(executionCtr.globalMap);
-
+ */
 
 }
 
@@ -77,7 +77,7 @@ executionCtr.initGlobalMemory = function(functionTable, constantTable) {
     // Key es el nombre de la variable |  Value es la dirección de memoria, 
     functionTable.get('Global').vars.forEach( (value, key, map ) => {
         // Ver qué tipo es y asignarla al globalmap
-        if(value.start > -1){
+        if(value != null && value.start > -1){
             for(let i = value.start; value.dims >1 ? i< value.start + value.max1 * value.max2 : i < value.start + value.max1 ; i++){
                 executionCtr.globalMap.set(i, this.getDefaultValue(i));
             }
@@ -130,7 +130,7 @@ executionCtr.initQuadrupleExecution = function() {
 
 
 executionCtr.parseToType = function(dir){
-    if(dir.start > -1){
+    if(dir != null && dir.sum){
         let value = (!localMemory.isEmpty() && localMemory.peek().has(dir.sum ))? localMemory.peek().get(dir.sum ) : executionCtr.globalMap.get(dir.sum );
         dir = dir.start + value;
     }
@@ -163,19 +163,19 @@ executionCtr.operationTwoOperands = function(quadruple,operator) {
     let value = quadruple.iDirThree;
     let value1 = quadruple.iDirOne;
     let value2 = quadruple.iDirTwo;
-    if(quadruple.iDirThree.start > -1){
+
+    if(quadruple.iDirThree != null && quadruple.iDirThree.sum){
         value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirThree.sum ))? localMemory.peek().get(quadruple.iDirThree.sum ) : executionCtr.globalMap.get(quadruple.iDirThree.sum );
         value = quadruple.iDirThree.start + value;
     }
-    if(quadruple.iDirOne.start > -1){
+    if(quadruple.iDirOne != null && quadruple.iDirOne.sum){
         value1 = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne.sum ))? localMemory.peek().get(quadruple.iDirOne.sum ) : executionCtr.globalMap.get(quadruple.iDirOne.sum );
         value1 = quadruple.iDirOne.start + value1;
     }
-    if(quadruple.iDirTwo.start > -1){
+    if(quadruple.iDirTwo != null && quadruple.iDirTwo.sum){
         value2 = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirTwo.sum ))? localMemory.peek().get(quadruple.iDirTwo.sum ) : executionCtr.globalMap.get(quadruple.iDirTwo.sum );
         value2 = quadruple.iDirTwo.start + value2;
     }
-
     // If we are not processing a function we are on the global scope
     if(localMemory.isEmpty()){
         // Solo global
@@ -227,15 +227,15 @@ executionCtr.operationTwoOperands = function(quadruple,operator) {
 executionCtr.operationOneOperand = function(quadruple, operator) {
         let value = quadruple.iDirThree;
         let value1 = quadruple.iDirOne;
-        if(quadruple.iDirThree.start > -1){
+        if(quadruple.iDirThree != null && quadruple.iDirThree.sum){
             value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirThree.sum ))? localMemory.peek().get(quadruple.iDirThree.sum ) : executionCtr.globalMap.get(quadruple.iDirThree.sum );
             value = quadruple.iDirThree.start + value;
         }
-        if(quadruple.iDirOne.start > -1){
+        if(quadruple.iDirOne != null && quadruple.iDirOne.sum){
             value1 = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne.sum ))? localMemory.peek().get(quadruple.iDirOne.sum ) : executionCtr.globalMap.get(quadruple.iDirOne.sum );
             value1 = quadruple.iDirOne.start + value1;
         }
-
+    if(value != null){
         // If we are not processing a function we are on the global scope
         if(localMemory.isEmpty()){
             // Solo global
@@ -272,6 +272,7 @@ executionCtr.operationOneOperand = function(quadruple, operator) {
             //Agarramos en Local y si no esta checamos en global
         } 
         this.parseToType(quadruple.iDirThree);
+    }
 }
 
 executionCtr.verify = function(quadruple){
@@ -309,11 +310,11 @@ executionCtr.createLocalMemory = function(funcName){
 executionCtr.initParam = function(quadruple, operator) {
     let value = quadruple.iDirThree;
     let value1 = quadruple.iDirOne;
-    if(quadruple.iDirThree.start > -1){
+    if(quadruple.iDirThree != null && quadruple.iDirThree.sum){
     value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirThree.sum ))? localMemory.peek().get(quadruple.iDirThree.sum ) : executionCtr.globalMap.get(quadruple.iDirThree.sum );
     value = quadruple.iDirThree.start + value;
     }
-    if(quadruple.iDirOne.start > -1){
+    if(quadruple.iDirOne != null && quadruple.iDirOne.sum){
         value1 = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne.sum ))? localMemory.peek().get(quadruple.iDirOne.sum ) : executionCtr.globalMap.get(quadruple.iDirOne.sum );
         value1 = quadruple.iDirOne.start + value1;
     } 
@@ -332,7 +333,7 @@ executionCtr.initParam = function(quadruple, operator) {
 
 // Procesar los cuádruplos
 executionCtr.processQuadruple = function(quadruple) {
-    // OPERATOR +
+
     if(quadruple.operator == '+')
     {
         // console.log('ENTERED PLUS');
@@ -411,7 +412,6 @@ executionCtr.processQuadruple = function(quadruple) {
     {
         // console.log('ENTERED Greater Than');
         executionCtr.operationTwoOperands(quadruple , function(a, b) { return a > b ? 1 : 0; });
-        console.log(executionCtr.globalMap);
         this.nextProcess();
     }
     else if (quadruple.operator == '<') 
@@ -443,10 +443,6 @@ executionCtr.processQuadruple = function(quadruple) {
     else if (quadruple.operator == 'RETURN') 
     {
         // console.log('Enter Return' );
-        //console.log(localMemory);
-        if(quadruple.iDirThree == null && localMemory.isEmpty()){
-            console.log(executionCtr.globalMap.get(quadruple.iDirOne));
-        }
         executionCtr.operationOneOperand(quadruple , function(a) { return a; });
         this.nextProcess();
     }
@@ -506,7 +502,7 @@ executionCtr.processQuadruple = function(quadruple) {
     }else if (quadruple.operator == 'WRITE'){
         let value = 0;
         let text;
-        if(quadruple.iDirOne.start > -1){
+        if(quadruple.iDirOne != null && quadruple.iDirOne.sum){
             value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne.sum ))? localMemory.peek().get(quadruple.iDirOne.sum ) : executionCtr.globalMap.get(quadruple.iDirOne.sum );
             text = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne.start + value))? localMemory.peek().get(quadruple.iDirOne.start + value) : executionCtr.globalMap.get(quadruple.iDirOne.start + value);
         }else{
@@ -528,7 +524,7 @@ executionCtr.processQuadruple = function(quadruple) {
             result = this.getDefaultValue(quadruple.iDirOne);
         }
         let value = -1;
-        if(quadruple.iDirOne.start > -1){
+        if(quadruple.iDirOne != null && quadruple.iDirOne.sum){
             value = (!localMemory.isEmpty() && localMemory.peek().has(quadruple.iDirOne.sum ))? localMemory.peek().get(quadruple.iDirOne.sum ) : executionCtr.globalMap.get(quadruple.iDirOne.sum );
             value = quadruple.iDirOne.start + value;
         }

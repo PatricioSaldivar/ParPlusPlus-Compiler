@@ -164,7 +164,7 @@ memoryCtr.setDirection = function(type, currentScope){
 
 memoryCtr.getType = function(dir){
 
-    if(dir.start){
+    if(dir.sum){
         dir = dir.start;
     }
 
