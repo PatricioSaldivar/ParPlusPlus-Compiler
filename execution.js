@@ -125,7 +125,10 @@ executionCtr.getDefaultValue = function(memDir) {
 }
 
 executionCtr.initQuadrupleExecution = function() {
-        this.processQuadruple(globalListQuadruples[0]);
+        while(currentQuadrupleIndex < globalListQuadruples.length)
+        {
+        this.processQuadruple(globalListQuadruples[currentQuadrupleIndex]);
+        }
 }
 
 
@@ -295,12 +298,7 @@ executionCtr.parseValue = function(data,type){
 
 
 executionCtr.nextProcess = function(){
-    currentQuadrupleIndex++;
-    if (currentQuadrupleIndex >= globalListQuadruples.length)
-    {
-        return;
-    }
-    executionCtr.processQuadruple(globalListQuadruples[currentQuadrupleIndex]);   
+    currentQuadrupleIndex++;  
 }
 
 executionCtr.createLocalMemory = function(funcName){
@@ -333,7 +331,6 @@ executionCtr.initParam = function(quadruple, operator) {
 
 // Procesar los cuádruplos
 executionCtr.processQuadruple = function(quadruple) {
-
     if(quadruple.operator == '+')
     {
         // console.log('ENTERED PLUS');
