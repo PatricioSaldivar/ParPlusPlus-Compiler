@@ -128,6 +128,15 @@ ParPlusPlusListener.prototype.exitVarDimensionsInit = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParPlusPlusParser#aint.
+ParPlusPlusListener.prototype.enterAint = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#aint.
+ParPlusPlusListener.prototype.exitAint = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParPlusPlusParser#statues.
 ParPlusPlusListener.prototype.enterStatues = function(ctx) {
 };
@@ -173,6 +182,24 @@ ParPlusPlusListener.prototype.exitVarDimensions = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParPlusPlusParser#firstDim.
+ParPlusPlusListener.prototype.enterFirstDim = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#firstDim.
+ParPlusPlusListener.prototype.exitFirstDim = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#secondDim.
+ParPlusPlusListener.prototype.enterSecondDim = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#secondDim.
+ParPlusPlusListener.prototype.exitSecondDim = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParPlusPlusParser#asignation.
 ParPlusPlusListener.prototype.enterAsignation = function(ctx) {
 };
@@ -209,6 +236,33 @@ ParPlusPlusListener.prototype.exitRead = function(ctx) {
 };
 
 
+// Enter a parse tree produced by ParPlusPlusParser#xread.
+ParPlusPlusListener.prototype.enterXread = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#xread.
+ParPlusPlusListener.prototype.exitXread = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#readvars.
+ParPlusPlusListener.prototype.enterReadvars = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#readvars.
+ParPlusPlusListener.prototype.exitReadvars = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#yread.
+ParPlusPlusListener.prototype.enterYread = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#yread.
+ParPlusPlusListener.prototype.exitYread = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ParPlusPlusParser#write.
 ParPlusPlusListener.prototype.enterWrite = function(ctx) {
 };
@@ -224,6 +278,15 @@ ParPlusPlusListener.prototype.enterXwrite = function(ctx) {
 
 // Exit a parse tree produced by ParPlusPlusParser#xwrite.
 ParPlusPlusListener.prototype.exitXwrite = function(ctx) {
+};
+
+
+// Enter a parse tree produced by ParPlusPlusParser#text.
+ParPlusPlusListener.prototype.enterText = function(ctx) {
+};
+
+// Exit a parse tree produced by ParPlusPlusParser#text.
+ParPlusPlusListener.prototype.exitText = function(ctx) {
 };
 
 

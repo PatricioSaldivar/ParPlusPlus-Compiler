@@ -66,5 +66,3 @@ main() {
     write(i," <-i  j-> ", j ," c-> ",c);
     write(fibo(9));
 }
-
-

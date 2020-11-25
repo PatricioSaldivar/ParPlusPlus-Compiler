@@ -27,7 +27,7 @@ yvars //Continuation of another variable of same type
 | ;
 
 funcBlock // Declare a function
-: type MODULE ID LP params RP varBlock LCB statuesWithReturn RCB funcEnd funcBlock
+: type MODULE ID LP params RP varBlock LCB statues RCB funcEnd funcBlock
 | VOID MODULE ID LP params RP varBlock LCB statues RCB funcEnd funcBlock
 | ;
 
@@ -49,12 +49,15 @@ rparams // Continuation of parameters
 | ;
 
 varDimensionsInit // Define dimensions of a variable
-: LB INT RB
-| LB INT RB LB INT RB
-| ;
+: LB aint RB
+| LB aint RB LB aint RB;
+
+aint
+: INT;
 
 statues // Define 0 or more statues
 :statue statues
+| returnFunc semicolon
 | ;
 
 statuesWithReturn
@@ -75,9 +78,16 @@ semicolon
 : SEMICOLON;
 
 varDimensions // Get acces to a dimension of a variable
-: LB expresion RB
-| LB expresion RB LB expresion RB
+: LB expresion RB firstDim
+| LB expresion RB firstDim LB expresion RB secondDim
 | ;
+
+firstDim
+: ;
+
+secondDim
+: ;
+
 
 asignation // Statue of assignation
 : ID varDimensions ASSIGN expresion;
@@ -89,14 +99,28 @@ returnFunc // Statue of return function
 : RETURN LP expresion RP;
 
 read // Statue of read function
-: READ LP xvars RP;
+: READ LP xread RP;
+
+xread
+: readvars yread;
+
+readvars
+: ID varDimensions;
+
+yread
+: COMMA xread
+| ;
+
 
 write // Statue of write function
 : WRITE LP xwrite RP;
 
 xwrite // Values to use in write function
-: expresion ywrite
-| STRING ywrite;
+: text ywrite;
+
+text
+: expresion 
+| STRING;
 
 ywrite // Continuation of expresions or strings in write function
 : COMMA xwrite
@@ -208,7 +232,9 @@ mod
 
 factor // A factor
 : funcCall
+| MINUS funcCall
 | LP expresion RP
+| MINUS LP expresion RP
 | cte
 | MINUS cte;
 
@@ -276,7 +302,7 @@ DO: 'do';
 ID : ('A'..'Z' | 'a'..'z') ('A'..'Z' | 'a'..'z' | '0'..'9')*; 
 INT: ('0' .. '9') +;
 FLOAT: ('0' .. '9') + ('.' ('0' .. '9') +)?;
-STRING: '"' (~[\t\r\n] )* '"'; 
+STRING: '"' (~[\t\r\n"] )* '"'; 
 CHAR: ['] (~[\t\r\n]) ['];
 
 WHITESPACE : [ \t\r\n]+ -> skip ;
