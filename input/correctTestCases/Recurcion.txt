@@ -28,6 +28,13 @@ var int x;
     }
 }
 
+int module fibo(int a)
+{
+    if(a > 2){
+        return a + fibo(a-1);
+    }
+    return 1;
+}
 
 
 void module dos(int a)
@@ -54,6 +61,7 @@ main() {
     write(factorial(factorial(uno(3,2))));
     read(j,i,c);
     write(i," <-i  j-> ", j ," c-> ",c);
+    write(fibo(5));
 }
 
 
