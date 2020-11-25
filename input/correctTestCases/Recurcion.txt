@@ -29,11 +29,14 @@ var int x;
 }
 
 int module fibo(int a)
+var int x,y;
 {
-    if(a > 2){
-        return a + fibo(a-1);
+    if(a < 2) then {
+        return (a);
     }
-    return 1;
+    x = fibo(a-1);
+    y = fibo(a-2);
+    return (x + y);
 }
 
 
@@ -61,7 +64,5 @@ main() {
     write(factorial(factorial(uno(3,2))));
     read(j,i,c);
     write(i," <-i  j-> ", j ," c-> ",c);
-    write(fibo(5));
+    write(fibo(9));
 }
-
-
